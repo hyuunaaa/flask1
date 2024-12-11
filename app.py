@@ -13,7 +13,7 @@ def get_db_connection():
         database='saramin_db',
         cursorclass=pymysql.cursors.DictCursor
     )
-#testtest
+#testtest2222222
 # 기본 루트 경로
 @app.route('/', methods=['GET'])
 def home():
