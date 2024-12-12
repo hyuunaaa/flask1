@@ -13,7 +13,7 @@ def get_db_connection():
         database='saramin_db',
         cursorclass=pymysql.cursors.DictCursor
     )
-#testtest2222222
+
 # 기본 루트 경로
 @app.route('/', methods=['GET'])
 def home():
@@ -28,14 +28,14 @@ def register():
         with conn.cursor() as cursor:
             # 비밀번호 Base64 암호화
             encoded_password = base64.b64encode(data['password'].encode()).decode()
-            sql = """
-            INSERT INTO users (email, password, name) VALUES (%s, %s, %s)
-            """
+            sql = "INSERT INTO users (email, password, name) VALUES (%s, %s, %s)"
             cursor.execute(sql, (data['email'], encoded_password, data['name']))
             conn.commit()
         return jsonify({"message": "회원가입 성공"}), 201
+    except pymysql.MySQLError as e:
+        return jsonify({"error": "MySQL Error: " + str(e)}), 500
     except Exception as e:
-        return jsonify({"error": str(e)}), 500
+        return jsonify({"error": "Server Error: " + str(e)}), 500
     finally:
         conn.close()
 
@@ -46,9 +46,8 @@ def login():
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            # 비밀번호 Base64 암호화
             encoded_password = base64.b64encode(data['password'].encode()).decode()
-            sql = "SELECT * FROM users WHERE email=%s AND password=%s"
+            sql = "SELECT id, email, name, created_at FROM users WHERE email=%s AND password=%s"
             cursor.execute(sql, (data['email'], encoded_password))
             user = cursor.fetchone()
         if user:
@@ -67,9 +66,7 @@ def update_user(user_id):
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            sql = """
-            UPDATE users SET email=%s, name=%s WHERE id=%s
-            """
+            sql = "UPDATE users SET email=%s, name=%s WHERE id=%s"
             cursor.execute(sql, (data.get('email'), data.get('name'), user_id))
             conn.commit()
         return jsonify({"message": "회원 정보 수정 성공"}), 200
@@ -116,7 +113,8 @@ def search_jobs():
         conn = get_db_connection()
         with conn.cursor() as cursor:
             query = """
-            SELECT * FROM saramin_jobs WHERE title LIKE %s OR company LIKE %s
+            SELECT * FROM saramin_jobs 
+            WHERE (title LIKE %s OR company LIKE %s)
             """
             params = [f"%{keyword}%", f"%{keyword}%"]
             if location:
@@ -175,9 +173,7 @@ def add_favorite():
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
-            sql = """
-            INSERT INTO favorites (user_id, job_id) VALUES (%s, %s)
-            """
+            sql = "INSERT INTO favorites (user_id, job_id) VALUES (%s, %s)"
             cursor.execute(sql, (data['user_id'], data['job_id']))
             conn.commit()
         return jsonify({"message": "관심 등록 성공"}), 201
