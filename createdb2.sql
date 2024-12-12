@@ -15,53 +15,43 @@ FLUSH PRIVILEGES;
 -- saramin_db 데이터베이스 사용
 USE saramin_db;
 
--- users 테이블 생성 (회원 정보)
 CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    email VARCHAR(255) NOT NULL UNIQUE,
-    password VARCHAR(255) NOT NULL,
-    name VARCHAR(255) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    id INT AUTO_INCREMENT PRIMARY KEY,         -- 자동 증가 ID
+    user_id VARCHAR(255) NOT NULL UNIQUE,      -- 필수, 유일한 사용자 ID
+    email VARCHAR(255) NOT NULL UNIQUE,        -- 필수, 유일한 이메일
+    password VARCHAR(255) NOT NULL,            -- 필수 비밀번호
+    name VARCHAR(255) NOT NULL,                -- 필수 사용자 이름
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 생성 시간
 );
-/*
--- saramin_jobs 테이블 생성 (채용 공고 정보)
-CREATE TABLE IF NOT EXISTS saramin_jobs (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    title VARCHAR(255) NOT NULL,
-    company VARCHAR(255) NOT NULL,
-    location VARCHAR(255) NOT NULL,
-    salary VARCHAR(255),
-    description TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-);
-*/
-
 -- 채용 공고 테이블 생성
 CREATE TABLE IF NOT EXISTS saramin_jobs (
-    id INT AUTO_INCREMENT PRIMARY KEY, -- 고유 ID
-    company VARCHAR(255) NOT NULL, -- 회사명
-    title VARCHAR(255) NOT NULL, -- 공고 제목
-    location VARCHAR(255) DEFAULT NULL, -- 근무 지역
-    salary VARCHAR(100) DEFAULT NULL, -- 연봉 정보
-    link TEXT NOT NULL, -- 공고 링크
-    education VARCHAR(100) DEFAULT NULL, -- 학력 요구사항
-    description TEXT DEFAULT NULL, -- 공고 설명
+    id INT AUTO_INCREMENT PRIMARY KEY,        -- 고유 ID
+    user_id VARCHAR(255) NOT NULL,            -- 공고를 등록한 사용자
+    company VARCHAR(255) NOT NULL,            -- 회사명
+    title VARCHAR(255) NOT NULL,              -- 공고 제목
+    location VARCHAR(255) DEFAULT NULL,       -- 근무 지역
+    salary VARCHAR(100) DEFAULT NULL,         -- 연봉 정보
+    link TEXT NOT NULL,                       -- 공고 링크
+    education VARCHAR(100) DEFAULT NULL,      -- 학력 요구사항
+    description TEXT DEFAULT NULL,            -- 공고 설명
     employment_type VARCHAR(100) DEFAULT NULL, -- 고용 형태
-    experience VARCHAR(100) DEFAULT NULL, -- 경력 요구사항
-    deadline DATE DEFAULT NULL, -- 마감일
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 데이터 생성 시간
-); -- ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+    experience VARCHAR(100) DEFAULT NULL,     -- 경력 요구사항
+    deadline DATE DEFAULT NULL,               -- 마감일
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 데이터 생성 시간
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE -- 사용자와의 관계
+);
 
 
 -- favorites 테이블 생성 (사용자의 관심 채용 공고)
 CREATE TABLE IF NOT EXISTS favorites (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    user_id INT NOT NULL,
-    job_id INT NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE
+    id INT AUTO_INCREMENT PRIMARY KEY,             -- 고유 ID
+    user_id INT NOT NULL,                          -- users 테이블의 id를 참조
+    job_id INT NOT NULL,                           -- saramin_jobs 테이블의 id를 참조
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성 시간
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- 참조 무결성
+    FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE -- 참조 무결성
 );
+
 
 -- 데이터 확인
 -- SHOW TABLES;
