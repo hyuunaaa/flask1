@@ -3,7 +3,7 @@ from mysql.connector import errorcode
 
 DB_HOST = "localhost"
 DB_USER = "root"
-DB_PASSWORD = "1234"
+DB_PASSWORD = "5555"
 
 def setup_database():
     try:

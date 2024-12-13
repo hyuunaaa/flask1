@@ -1,20 +1,91 @@
+================================================
+mysql 설치 및 실행
+================================================
+sudo apt update
+sudo apt install mysql-server -y
+sudo systemctl status mysql
+
+
+o root 패스워드 설정
+ubuntu@202224012-kha:~/git/flask1$ sudo mysql
+
+mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '555555';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '555555';
+Query OK, 0 rows affected (0.00 sec)
+
+mysql> FLUSH PRIVILEGES;
+Query OK, 0 rows affected (0.01 sec)
+
+mysql> commit;
+Query OK, 0 rows affected (0.00 sec)
+
+
+mysql -u root -p
+
+================================================
+[] 파이썬 가상환경
+================================================
+o 가상환경 만들기
+python3 -m venv ../flask_env
+
+o 활성화
+source ../flask_env/bin/activate
+
+o 비활성화
+deactivate
+
+o 필요 프로그램 설치
+pip install -r requirements.txt
+없으면, 아래 명령어로 설치
+pip install flask pymysql requests beautifulsoup4 pandas schedule gunicorn
+
+o requirements.txt 만들기
+pip freeze > requirements.txt
+
+cat requirements.txt
+
+o 기타
+python -m flask --version
+rm -rf ../flask_env
+pip install -r requirements.txt
+
+
+==========
 mysql -u root -p
 mysql> select user, host from mysql.user;
+
 
 o 권한 부여
 https://goyunji.tistory.com/99
 
-o 외부 접속 허용 user 생성 방법
+o mysql 외부 접속 허용 user 생성 방법
+=============================
 mysql -u root -p
-CREATE USER 'root'@'%' IDENTIFIED BY '1234'
+CREATE USER 'root'@'%' IDENTIFIED BY '555555'
 CREATE USER 'flask_user'@'%' IDENTIFIED BY '555555'
-
 GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+
+mysql> select user, host from mysql.user;
++------------------+-----------+
+| user             | host      |
++------------------+-----------+
+| flask_user       | %         | <- 이렇게 나와야 외부 접속 가능
+| root             | %         | <- 이렇게 나와야 외부 접속 가능
+| debian-sys-maint | localhost |
+| mysql.infoschema | localhost |
+| mysql.session    | localhost |
+| mysql.sys        | localhost |
+| root             | localhost |
++------------------+-----------+
+7 rows in set (0.00 sec)
 
 FLUSH PRIVILEGES;
 commit;
 exit
 
+- config 도 아래와 같이 설정 해야함
 sudo vi /etc/mysql/mysql.cnf
 
 !includedir /etc/mysql/conf.d/
@@ -27,10 +98,10 @@ bind-address=0.0.0.0		    # 추가
 sudo systemctl restart mysql
  service mysql restart
 
-
+- dbeaver 설정
 dbeaver의 CONNECTION-Driver properties-allowPublicKeyRetrieval, TRUE 설정
 
-
+- 참고자료
 https://i-kiin.net/?p=4600
 
 출처: https://saii42.tistory.com/25 [saii 잡다한 블로그:티스토리]
@@ -95,30 +166,3 @@ SOURCE /path/to/db_create.sql;
 SHOW DATABASES;
 USE saramin_db;
 SHOW TABLES;
-
-//////////////////////////////////////////////////////
-[] 파이썬 가상환경
-
-o 가상환경 만들기
-python3 -m venv ../flask_env
-
-o 활성화
-source ../flask_env/bin/activate
-
-o 비활성화
-deactivate
-
-o 필요 프로그램 설치
-pip install -r requirements.txt
-없으면, 아래 명령어로 설치
-pip install flask pymysql requests beautifulsoup4 pandas schedule gunicorn
-
-o requirements.txt 만들기
-pip freeze > requirements.txt
-
-cat requirements.txt
-
-o 기타
-python -m flask --version
-rm -rf ../flask_env
-pip install -r requirements.txt

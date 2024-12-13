@@ -23,6 +23,7 @@ CREATE TABLE IF NOT EXISTS users (
     name VARCHAR(255) NOT NULL,                -- 필수 사용자 이름
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 생성 시간
 );
+
 -- 채용 공고 테이블 생성
 CREATE TABLE IF NOT EXISTS saramin_jobs (
     id INT AUTO_INCREMENT PRIMARY KEY,        -- 고유 ID
@@ -36,7 +37,7 @@ CREATE TABLE IF NOT EXISTS saramin_jobs (
     employment_type VARCHAR(100) DEFAULT NULL, -- 고용 형태
     experience VARCHAR(100) DEFAULT NULL,     -- 경력 요구사항
     deadline DATE DEFAULT NULL,               -- 마감일
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 데이터 생성 시간
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 데이터 생성 시간
 );
 
 -- favorites 테이블 생성 (사용자의 관심 채용 공고)
@@ -44,30 +45,13 @@ CREATE TABLE IF NOT EXISTS favorites (
     id INT AUTO_INCREMENT PRIMARY KEY,             -- 고유 ID
     user_id VARCHAR(255) NOT NULL,                 -- users 테이블의 user_id를 참조 (VARCHAR로 수정)
     job_id INT NOT NULL,                           -- saramin_jobs 테이블의 id를 참조
-    applied BOOLEAN DEFAULT FALSE,                 -- 지원 여부 (기본값: FALSE)    
+    applied BOOLEAN DEFAULT FALSE,                 -- 지원 여부 (기본값: FALSE)
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성 시간
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE, -- 참조 무결성 (users 테이블의 user_id와 연결)
     FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE -- 참조 무결성
 );
 
-CREATE TABLE IF NOT EXISTS apply_ (
-    id INT AUTO_INCREMENT PRIMARY KEY,             -- 고유 ID
-    user_id VARCHAR(255) NOT NULL,                 -- users 테이블의 user_id를 참조 (VARCHAR로 수정)
-    job_id INT NOT NULL,                           -- saramin_jobs 테이블의 id를 참조
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성 시간
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE, -- 참조 무결성 (users 테이블의 user_id와 연결)
-    FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE -- 참조 무결성
-);
-
-CREATE TABLE IF NOT EXISTS apply_ (
-    id INT AUTO_INCREMENT PRIMARY KEY,             -- 고유 ID
-    user_id VARCHAR(255) NOT NULL,                 -- users 테이블의 user_id를 참조 (VARCHAR로 수정)
-    log_error VARCHAR(255) NOT NULL,                 -- users 테이블의 user_id를 참조 (VARCHAR로 수정)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성 시간
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE, -- 참조 무결성 (users 테이블의 user_id와 연결)
-    FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE -- 참조 무결성
-);
-
+-- logs 테이블 생성 (로그 저장용)
 CREATE TABLE IF NOT EXISTS logs (
     id INT AUTO_INCREMENT PRIMARY KEY,        -- 고유 ID
     user_id VARCHAR(255) NOT NULL,            -- 로그를 생성한 사용자 ID
@@ -75,21 +59,3 @@ CREATE TABLE IF NOT EXISTS logs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 로그 생성 시간
     FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE -- users 테이블의 user_id와 연결
 );
-
--- DROP TABLE IF EXISTS favorites;
-/*
-CREATE TABLE IF NOT EXISTS favorites (
-    id INT AUTO_INCREMENT PRIMARY KEY,             -- 고유 ID
-    user_id INT NOT NULL,                          -- users 테이블의 id를 참조
-    job_id INT NOT NULL,                           -- saramin_jobs 테이블의 id를 참조
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성 시간
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE, -- 참조 무결성
-    FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE -- 참조 무결성
-);
-*/
-
--- 데이터 확인
--- SHOW TABLES;
-
--- 테이블 구조 확인
----DESCRIBE saramin_jobs;
