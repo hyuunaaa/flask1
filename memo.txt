@@ -6,7 +6,7 @@ sudo apt install mysql-server -y
 sudo systemctl status mysql
 
 
-o root 패스워드 설정
+o 계정 생성 및 패스워드 설정
 ubuntu@202224012-kha:~/git/flask1$ sudo mysql
 
 mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '555555';
@@ -14,6 +14,9 @@ Query OK, 0 rows affected (0.00 sec)
 
 mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '555555';
 Query OK, 0 rows affected (0.00 sec)
+
+mysql> ALTER USER 'flask_user'@'localhost' IDENTIFIED WITH mysql_native_password BY '555555';
+mysql> ALTER USER 'flask_user'@'%' IDENTIFIED WITH mysql_native_password BY '555555';
 
 mysql> FLUSH PRIVILEGES;
 Query OK, 0 rows affected (0.01 sec)
