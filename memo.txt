@@ -27,6 +27,14 @@ Query OK, 0 rows affected (0.00 sec)
 
 mysql -u root -p
 
+
+- 기타 명령들
+
+SHOW DATABASES;
+USE saramin_db;
+SHOW TABLES;
+DESCRIBE users;
+
 ================================================
 [] 파이썬 가상환경
 ================================================
