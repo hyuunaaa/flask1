@@ -2,7 +2,6 @@ import requests
 from bs4 import BeautifulSoup
 import pandas as pd
 import pymysql
-from concurrent.futures import ThreadPoolExecutor
 import time
 
 # 데이터 무결성을 위한 중복 제거용 집합
@@ -24,6 +23,7 @@ def save_to_database(jobs):
     Args:
         jobs (list): 크롤링한 채용 정보 리스트
     """
+    connection = None
     try:
         connection = pymysql.connect(**db_config)
         with connection.cursor() as cursor:
@@ -31,7 +31,10 @@ def save_to_database(jobs):
             INSERT INTO saramin_jobs (title, company, location, salary, description, created_at)
             VALUES (%s, %s, %s, %s, %s, NOW())
             ON DUPLICATE KEY UPDATE
-            company=VALUES(company), location=VALUES(location), salary=VALUES(salary), description=VALUES(description);
+            company=VALUES(company),
+            location=VALUES(location),
+            salary=VALUES(salary),
+            description=VALUES(description);
             """
             for job in jobs:
                 cursor.execute(insert_query, (
@@ -144,7 +147,7 @@ def crawl_saramin(keyword, pages=1, min_jobs=100):
         time.sleep(1)  # 서버 부하 방지 딜레이
 
     print(f"총 {len(jobs)}개의 채용 공고를 크롤링했습니다.")
-    #db에 저장
+    # DB에 저장
     save_to_database(jobs)
     return pd.DataFrame(jobs[:min_jobs])  # 최소 요구 개수만 반환
 
@@ -152,5 +155,5 @@ if __name__ == "__main__":
     # 'python' 키워드로 5페이지 크롤링
     df = crawl_saramin("python", pages=5, min_jobs=100)
     print(df)
-    # csv에 저장
+    # CSV에 저장
     df.to_csv('saramin_python.csv', index=False)

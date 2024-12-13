@@ -6,9 +6,30 @@ https://goyunji.tistory.com/99
 
 o 외부 접속 허용 user 생성 방법
 mysql -u root -p
-create user 'user1'@'%' identified by '1234';
+CREATE USER 'root'@'%' IDENTIFIED BY '1234'
+CREATE USER 'flask_user'@'%' IDENTIFIED BY '555555'
+
+GRANT ALL PRIVILEGES ON *.* TO 'root'@'%' WITH GRANT OPTION;
+
+FLUSH PRIVILEGES;
+commit;
 exit
-위와 같이 user 생성하고, 아래 내용 반영
+
+sudo vi /etc/mysql/mysql.cnf
+
+!includedir /etc/mysql/conf.d/
+!includedir /etc/mysql/mysql.conf.d/
+
+[mysqld]			            # 추가
+port=3306 # or any other port	# 추가
+bind-address=0.0.0.0		    # 추가
+
+sudo systemctl restart mysql
+ service mysql restart
+
+
+dbeaver의 CONNECTION-Driver properties-allowPublicKeyRetrieval, TRUE 설정
+
 
 https://i-kiin.net/?p=4600
 
@@ -78,7 +99,7 @@ SHOW TABLES;
 //////////////////////////////////////////////////////
 [] 파이썬 가상환경
 
-python3 -m venv flask_env
+python3 -m venv ../flask_env
 가상환경 활성화:
 
 pip install pymysql
