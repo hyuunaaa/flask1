@@ -172,6 +172,53 @@ def autu_update_user(user_id):
         mimetype='application/json'
     )        
 
+'''
+http://127.0.0.1:5000/auth/profile/change_password/test4
+
+{
+    "current_password": "111111",
+    "new_password": "222222"
+}
+
+'''
+# 회원 비밀 번호 변경 API(완료)
+@app.route('/auth/profile/change_password/<string:user_id>', methods=['PUT'])
+def change_password(user_id):
+    """
+    비밀번호 변경 API
+    """
+    data = request.json
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            # 기존 비밀번호 확인
+            sql_check_password = "SELECT password FROM users WHERE user_id = %s"
+            cursor.execute(sql_check_password, (user_id,))
+            user = cursor.fetchone()
+
+            if not user:
+                return jsonify({"error": "해당 user_id가 존재하지 않습니다."}), 404
+
+            # 입력된 현재 비밀번호 Base64 인코딩
+            current_password_encoded = base64.b64encode(data['current_password'].encode()).decode()
+
+            # 기존 비밀번호가 일치하는지 확인
+            if user['password'] != current_password_encoded:
+                return jsonify({"error": "현재 비밀번호가 일치하지 않습니다."}), 400
+
+            # 새 비밀번호를 Base64로 인코딩 후 업데이트
+            new_password_encoded = base64.b64encode(data['new_password'].encode()).decode()
+            sql_update_password = "UPDATE users SET password=%s WHERE user_id=%s"
+            cursor.execute(sql_update_password, (new_password_encoded, user_id))
+            conn.commit()
+
+        return jsonify({"message": "비밀번호 변경 성공"}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
+
+
 # 회원 탈퇴 API(완료)
 @app.route('/autu/profile/<string:user_id>', methods=['DELETE'])
 def delete_user(user_id):
@@ -375,14 +422,14 @@ def get_user_favorites(user_id):
 
 # 지원하기 API(완료)
 '''
-http://127.0.0.1:5000/apply_
+http://127.0.0.1:5000/applications
 
 {
     "user_id": "test3",
     "job_id": 55
 }
 '''
-@app.route('/apply_', methods=['POST'])  # URL이 '/apply_'로 명확히 매핑됨
+@app.route('/applications', methods=['POST'])  # URL이 '/apply_'로 명확히 매핑됨
 def apply_job():  # 함수 이름을 명확히 변경
     data = request.json
     try:
@@ -424,7 +471,7 @@ def apply_job():  # 함수 이름을 명확히 변경
         
 # 지원 취소 API(완료)
 '''
-http://127.0.0.1:5000/apply/cancel
+http://127.0.0.1:5000/applications/cancel
 
 {
     "user_id": "test3",
@@ -432,7 +479,7 @@ http://127.0.0.1:5000/apply/cancel
 }
     
 '''
-@app.route('/apply/cancel', methods=['DELETE'])
+@app.route('/applications/cancel', methods=['DELETE'])
 def cancel_application():
     data = request.json
     try:
@@ -459,10 +506,10 @@ def cancel_application():
 
 # 지원 목록 조회 API(완료)
 '''
-http://127.0.0.1:5000/apply/list/test2
+http://127.0.0.1:5000/applications/list/test2
 
 '''
-@app.route('/apply/list/<string:user_id>', methods=['GET'])
+@app.route('/applications/list/<string:user_id>', methods=['GET'])
 def get_application_list(user_id):
     try:
         conn = get_db_connection()
