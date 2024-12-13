@@ -99,18 +99,26 @@ SHOW TABLES;
 //////////////////////////////////////////////////////
 [] 파이썬 가상환경
 
+o 가상환경 만들기
 python3 -m venv ../flask_env
-가상환경 활성화:
 
-pip install pymysql
-
+o 활성화
 source ../flask_env/bin/activate
-가상환경 내에서 Flask 설치:
 
-pip install flask
-설치 확인:
-
-python -m flask --version
-가상환경 비활성화 (작업 완료 후):
-
+o 비활성화
 deactivate
+
+o 필요 프로그램 설치
+pip install -r requirements.txt
+없으면, 아래 명령어로 설치
+pip install flask pymysql requests beautifulsoup4 pandas schedule gunicorn
+
+o requirements.txt 만들기
+pip freeze > requirements.txt
+
+cat requirements.txt
+
+o 기타
+python -m flask --version
+rm -rf ../flask_env
+pip install -r requirements.txt
