@@ -499,7 +499,6 @@ http://127.0.0.1:5000/auth/profile/change_password/test4
 '''
 # 회원 비밀 번호 변경 API(완료)
 @auth_bp.route('/auth/profile/change_password/<string:user_id>', methods=['PUT'])
-#@swag_from('docs/auth.yml')
 def change_password(user_id):
     """
     비밀번호 변경 API
@@ -535,7 +534,7 @@ def change_password(user_id):
             message:
               type: string
         examples:
-          application/json: |
+          application/json:
             {
               "message": "비밀번호 변경 성공"
             }
@@ -547,7 +546,7 @@ def change_password(user_id):
             error:
               type: string
         examples:
-          application/json: |
+          application/json:
             {
               "error": "현재 비밀번호가 일치하지 않습니다."
             }
@@ -559,7 +558,7 @@ def change_password(user_id):
             error:
               type: string
         examples:
-          application/json: |
+          application/json:
             {
               "error": "해당 user_id가 존재하지 않습니다."
             }
@@ -571,7 +570,7 @@ def change_password(user_id):
             error:
               type: string
         examples:
-          application/json: |
+          application/json:
             {
               "error": "Internal Server Error"
             }
@@ -588,15 +587,12 @@ def change_password(user_id):
             if not user:
                 return jsonify({"error": "해당 user_id가 존재하지 않습니다."}), 404
 
-            # 입력된 현재 비밀번호 Base64 인코딩
-            current_password_encoded = base64.b64encode(data['current_password'].encode()).decode()
-
             # 기존 비밀번호가 일치하는지 확인
-            if user['password'] != current_password_encoded:
+            if not check_password(data['current_password'], user['password']):
                 return jsonify({"error": "현재 비밀번호가 일치하지 않습니다."}), 400
 
-            # 새 비밀번호를 Base64로 인코딩 후 업데이트
-            new_password_encoded = base64.b64encode(data['new_password'].encode()).decode()
+            # 새 비밀번호를 암호화 후 업데이트
+            new_password_encoded = hash_password(data['new_password'])
             sql_update_password = "UPDATE users SET password=%s WHERE user_id=%s"
             cursor.execute(sql_update_password, (new_password_encoded, user_id))
             conn.commit()
