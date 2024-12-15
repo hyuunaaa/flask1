@@ -179,6 +179,7 @@ npm install swagger-jsdoc swagger-ui-express
 ├── 🟨 requirements.txt     # 파이썬 의존성 모듈 목록 파일
 ├── 🟨 saramin_python.csv   # 크롤러가 생성한 사람인 DB(csv) 파일
 ├── 🟨 initdb.py            # MYSQL 사용자, 북마크, 채용 공고 등 모델 8개 초기화/생성 스크립트
+├── 🟨 crawled-data.sql     # DB 초기화 생성 스크립트 파일
 ├── 🟨 csv2db.py            # 로컬 .csv -> MYSQL DB(saramin_db) 저장 스크립트
 ├── 🟨 app_start.sh         # flask 애플리케이션 백그라운드 실행 스크립트
 ├── 🟨 app_stop.sh          # flask 애플리케이션 종료 스크립트
