@@ -13,7 +13,8 @@ from bookmarks import bookmarks_bp  # bookmarks.py에서 Blueprint 임포트
 from applications import applications_bp  # applications.py에서 Blueprint 임포트
 from resume import resume_bp  # resume.py에서 Blueprint 임포트
 from review import review_bp  # review.py에서 Blueprint 임포트
-
+from opinion import opinion_bp  # opinion.py에서 Blueprint 임포트
+from board import board_bp  # opinion.py에서 Blueprint 임포트
 
 app = Flask(__name__)
 
@@ -59,6 +60,8 @@ app.register_blueprint(bookmarks_bp)
 app.register_blueprint(applications_bp)
 app.register_blueprint(resume_bp)
 app.register_blueprint(review_bp)
+app.register_blueprint(opinion_bp)
+app.register_blueprint(board_bp)
 
 if __name__ == '__main__':
     # 명령행에서 포트 인자 읽기

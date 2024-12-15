@@ -141,32 +141,31 @@ def setup_tables():
                 FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE
             );
         """)
-
-        # 리크루터 테이블 생성
+        
+        
+        # 사용자의 회사 추가 정보
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS recruiter (
+            CREATE TABLE IF NOT EXISTS _user_opinion (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                user_id VARCHAR(255) NOT NULL UNIQUE,
-                email VARCHAR(255) NOT NULL UNIQUE,
-                password VARCHAR(255) NOT NULL,
+                user_id VARCHAR(255) NOT NULL,
                 job_id INT NOT NULL,
+                message TEXT NOT NULL,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
                 FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE
             );
         """)
-
-        # 알림 테이블 생성
+        
+        # 사용자 게시판
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS user_notifications (
+            CREATE TABLE IF NOT EXISTS _user_board (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                recruiter_id VARCHAR(255) NOT NULL,
                 user_id VARCHAR(255) NOT NULL,
-                message TEXT NOT NULL,
-                created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
-                FOREIGN KEY (recruiter_id) REFERENCES recruiter(user_id),
-                FOREIGN KEY (user_id) REFERENCES users(user_id)
+                board TEXT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
             );
-        """)
+        """)        
 
         print("Tables created successfully.")
 
@@ -204,13 +203,13 @@ def setup_tables():
         for row in cursor.fetchall():
             print(row)            
             
-        print("\n========== STRUCTURE OF recruiter TABLE ==========")
-        cursor.execute("DESCRIBE recruiter;")
+        print("\n========== STRUCTURE OF _user_opinion TABLE ==========")
+        cursor.execute("DESCRIBE _user_opinion;")
         for row in cursor.fetchall():
             print(row)            
             
-        print("\n========== STRUCTURE OF user_notifications TABLE ==========")
-        cursor.execute("DESCRIBE user_notifications;")
+        print("\n========== STRUCTURE OF _user_board TABLE ==========")
+        cursor.execute("DESCRIBE _user_board;")
         for row in cursor.fetchall():
             print(row)                                                
 
