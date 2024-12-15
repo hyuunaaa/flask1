@@ -1,61 +1,98 @@
+/*
+실행방법
+  mysql -u root -p < ./crawled-data.sql
+*/
+
 -- MySQL 데이터베이스 생성
 CREATE DATABASE IF NOT EXISTS saramin_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;
 
--- flask_user 사용자 생성 및 권한 부여
+/*
+-- 사용자 생성 및 권한 부여
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '555555';
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '555555';
+
 CREATE USER IF NOT EXISTS 'flask_user'@'localhost' IDENTIFIED BY '555555';
+ALTER USER 'flask_user'@'localhost' IDENTIFIED WITH mysql_native_password BY '555555';
 GRANT ALL PRIVILEGES ON saramin_db.* TO 'flask_user'@'localhost';
 
--- 외부 접속을 위한 사용자 생성 및 권한 부여
 CREATE USER IF NOT EXISTS 'flask_user'@'%' IDENTIFIED BY '555555';
+ALTER USER 'flask_user'@'%' IDENTIFIED WITH mysql_native_password BY '555555';
 GRANT ALL PRIVILEGES ON saramin_db.* TO 'flask_user'@'%';
+*/
 
 -- 권한 적용
 FLUSH PRIVILEGES;
 
+-- 출력: 데이터베이스 목록
+SELECT '========== DATABASES LIST ==========' AS Section;
+SHOW DATABASES;
+
+-- 출력: MySQL 사용자 목록
+SELECT '========== MYSQL USERS ==========' AS Section;
+SELECT user, host FROM mysql.user;
+
 -- saramin_db 데이터베이스 사용
 USE saramin_db;
 
+-- saramin_db 테이블 생성
 CREATE TABLE IF NOT EXISTS users (
-    id INT AUTO_INCREMENT PRIMARY KEY,         -- 자동 증가 ID
-    user_id VARCHAR(255) NOT NULL UNIQUE,      -- 필수, 유일한 사용자 ID
-    email VARCHAR(255) NOT NULL UNIQUE,        -- 필수, 유일한 이메일
-    password VARCHAR(255) NOT NULL,            -- 필수 비밀번호
-    name VARCHAR(255) NOT NULL,                -- 필수 사용자 이름
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 생성 시간
+    id INT AUTO_INCREMENT PRIMARY KEY,        
+    user_id VARCHAR(255) NOT NULL UNIQUE,     
+    email VARCHAR(255) NOT NULL UNIQUE,       
+    password VARCHAR(255) NOT NULL,           
+    name VARCHAR(255) NOT NULL,               
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- 채용 공고 테이블 생성
 CREATE TABLE IF NOT EXISTS saramin_jobs (
-    id INT AUTO_INCREMENT PRIMARY KEY,        -- 고유 ID
-    company VARCHAR(255) NOT NULL,            -- 회사명
-    title VARCHAR(255) NOT NULL,              -- 공고 제목
-    location VARCHAR(255) DEFAULT NULL,       -- 근무 지역
-    salary VARCHAR(100) DEFAULT NULL,         -- 연봉 정보
-    link TEXT NOT NULL,                       -- 공고 링크
-    education VARCHAR(100) DEFAULT NULL,      -- 학력 요구사항
-    description TEXT DEFAULT NULL,            -- 공고 설명
-    employment_type VARCHAR(100) DEFAULT NULL, -- 고용 형태
-    experience VARCHAR(100) DEFAULT NULL,     -- 경력 요구사항
-    deadline DATE DEFAULT NULL,               -- 마감일
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP -- 데이터 생성 시간
+    id INT AUTO_INCREMENT PRIMARY KEY,        
+    company VARCHAR(255) NOT NULL,            
+    title VARCHAR(255) NOT NULL,              
+    location VARCHAR(255) DEFAULT NULL,       
+    salary VARCHAR(100) DEFAULT NULL,         
+    link TEXT NOT NULL,                       
+    education VARCHAR(100) DEFAULT NULL,      
+    description TEXT DEFAULT NULL,            
+    employment_type VARCHAR(100) DEFAULT NULL,
+    experience VARCHAR(100) DEFAULT NULL,     
+    deadline DATE DEFAULT NULL,               
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- favorites 테이블 생성 (사용자의 관심 채용 공고)
 CREATE TABLE IF NOT EXISTS favorites (
-    id INT AUTO_INCREMENT PRIMARY KEY,             -- 고유 ID
-    user_id VARCHAR(255) NOT NULL,                 -- users 테이블의 user_id를 참조 (VARCHAR로 수정)
-    job_id INT NOT NULL,                           -- saramin_jobs 테이블의 id를 참조
-    applied BOOLEAN DEFAULT FALSE,                 -- 지원 여부 (기본값: FALSE)
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 생성 시간
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE, -- 참조 무결성 (users 테이블의 user_id와 연결)
-    FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE -- 참조 무결성
+    id INT AUTO_INCREMENT PRIMARY KEY,             
+    user_id VARCHAR(255) NOT NULL,                 
+    job_id INT NOT NULL,                           
+    applied BOOLEAN DEFAULT FALSE,                 
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE
 );
 
--- logs 테이블 생성 (로그 저장용)
 CREATE TABLE IF NOT EXISTS logs (
-    id INT AUTO_INCREMENT PRIMARY KEY,        -- 고유 ID
-    user_id VARCHAR(255) NOT NULL,            -- 로그를 생성한 사용자 ID
-    log_message TEXT NOT NULL,                -- 로그 내용
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP, -- 로그 생성 시간
-    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE -- users 테이블의 user_id와 연결
+    id INT AUTO_INCREMENT PRIMARY KEY,        
+    user_id VARCHAR(255) NOT NULL,            
+    log_message TEXT NOT NULL,                
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE
 );
+
+-- 출력: saramin_db 테이블 목록
+SELECT CONCAT('========== TABLES IN saramin_db ==========') AS Output;
+SHOW TABLES;
+
+-- 출력: users 테이블 구조
+SELECT '========== STRUCTURE OF users TABLE ==========' AS Section;
+DESCRIBE users;
+
+-- 출력: saramin_jobs 테이블 구조
+SELECT '========== STRUCTURE OF saramin_jobs TABLE ==========' AS Section;
+DESCRIBE saramin_jobs;
+
+-- 출력: favorites 테이블 구조
+SELECT '========== STRUCTURE OF favorites TABLE ==========' AS Section;
+DESCRIBE favorites;
+
+-- 출력: logs 테이블 구조
+SELECT '========== STRUCTURE OF logs TABLE ==========' AS Section;
+DESCRIBE logs;
