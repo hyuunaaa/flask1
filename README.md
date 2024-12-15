@@ -196,3 +196,22 @@ npm install swagger-jsdoc swagger-ui-express
 - **POST** `/bookmarks` : 관심 등록
 - **GET** `/bookmarks/{user_id}` : 관심 채용 공고 조회
 ---
+## Job Posting(채용공고 관련 API)
+- **GET** `/jobs` : 채용 공고 목록 조회 API
+- **POST** `/jobs` : 채용 공고 등록 API
+- **DELETE** `/jobs/{job_id}` : 채용 공고 삭제 API
+- **GET** `/jobs/{job_id}` : 채용 공고 상세 조회 API
+- **PUT** `/jobs/{job_id}` : 채용 공고 수정 API
+---
+## User Opinion(사용자 의견 관련 API)
+- **POST** `/opinon` : 사용자 의견 등록 API
+- **DELETE** `/opinon/{id}` : 사용자 의견 삭제 API
+- **GET** `/opinon/{job_id}` : 사용자 의견 조회 API
+---
+## RESUME(이력서 관련 API)
+- **POST** `/resume` : 이력서 등록 API
+- **GET** `/resume/{user_id}` : 이력서 조회 API
+---
+## Review(채용 공고 리뷰 관련 API)
+- **POST** `/revew` : 리뷰 등록 API
+- **GET** `/revew/{job_id}` : 리뷰 조회 API
