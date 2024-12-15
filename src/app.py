@@ -6,6 +6,8 @@ import json
 from datetime import datetime
 from db import get_db_connection  # get_db_connection 임포트
 from flasgger import Swagger
+from dotenv import load_dotenv  # .env 파일 로드
+import os  # 환경 변수 접근
 
 from jobs import jobs_bp  # jobs.py에서 Blueprint 임포트
 from auth import auth_bp  # auth.py에서 Blueprint 임포트
@@ -14,7 +16,10 @@ from applications import applications_bp  # applications.py에서 Blueprint 임�
 from resume import resume_bp  # resume.py에서 Blueprint 임포트
 from review import review_bp  # review.py에서 Blueprint 임포트
 from opinion import opinion_bp  # opinion.py에서 Blueprint 임포트
-from board import board_bp  # opinion.py에서 Blueprint 임포트
+from board import board_bp  # board.py에서 Blueprint 임포트
+
+# .env 파일 로드
+load_dotenv()
 
 app = Flask(__name__)
 
@@ -26,7 +31,8 @@ swagger_template = {
         "description": "사람인 백엔드 서버 만들기",
         "version": "1.0.0"
     },
-    "host": "127.0.0.1:8080",
+    # .env 파일에서 'SWAGGER_HOST' 값을 읽어 사용
+    "host": os.getenv("SWAGGER_HOST", "localhost:5000"),  
     "basePath": "/",
     "schemes": ["http"]
 }
@@ -46,7 +52,6 @@ swagger_config = {
 }
 
 Swagger(app, template=swagger_template, config=swagger_config)
-#swagger = Swagger(app, template_file='docs/auth.json')
 
 # 기본 루트 경로
 @app.route('/', methods=['GET'])
