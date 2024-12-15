@@ -136,7 +136,7 @@ Flask App stopped.
 
 ### Swagger 문서
 
-- Swagger UI 주소: [http://113.198.66.75:17120/api-docs/](http://113.198.66.75:17120/api-docs/)
+- Swagger UI 주소: [http://113.198.66.75:10018/api-docs/](http://113.198.66.75:10018/api-docs/)
 
 #### Swagger 사용을 위한 설치 명령어
 Swagger를 사용하려면 아래 패키지를 설치해야 합니다:
