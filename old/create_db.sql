@@ -49,14 +49,14 @@ CREATE TABLE IF NOT EXISTS saramin_jobs (
     id INT AUTO_INCREMENT PRIMARY KEY,        
     company VARCHAR(255) NOT NULL,            
     title VARCHAR(255) NOT NULL,              
+    link TEXT NOT NULL,                           
     location VARCHAR(255) DEFAULT NULL,       
-    salary VARCHAR(100) DEFAULT NULL,         
-    link TEXT NOT NULL,                       
+    experience VARCHAR(100) DEFAULT NULL,         
     education VARCHAR(100) DEFAULT NULL,      
-    description TEXT DEFAULT NULL,            
-    employment_type VARCHAR(100) DEFAULT NULL,
-    experience VARCHAR(100) DEFAULT NULL,     
-    deadline DATE DEFAULT NULL,               
+    employment_type VARCHAR(100) DEFAULT NULL,    
+    description TEXT DEFAULT NULL,                
+    deadline DATE DEFAULT NULL,                   
+    salary VARCHAR(100) DEFAULT NULL,             
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 

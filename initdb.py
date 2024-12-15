@@ -11,7 +11,7 @@ def setup_database():
         cursor = conn.cursor()
 
         # 데이터베이스 삭제
-        cursor.execute("DROP DATABASE IF EXISTS saramin_db;")
+        #cursor.execute("DROP DATABASE IF EXISTS saramin_db;")
         # 데이터베이스가 없을 경우에만 생성
         cursor.execute("CREATE DATABASE IF NOT EXISTS saramin_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
 
@@ -55,20 +55,20 @@ def setup_tables():
 
         # saramin_jobs 테이블 생성
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS saramin_jobs (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                company VARCHAR(255) NOT NULL,
-                title VARCHAR(255) NOT NULL,
-                location VARCHAR(255) DEFAULT NULL,
-                salary VARCHAR(100) DEFAULT NULL,
-                link TEXT NOT NULL,
-                education VARCHAR(100) DEFAULT NULL,
-                description TEXT DEFAULT NULL,
-                employment_type VARCHAR(100) DEFAULT NULL,
-                experience VARCHAR(100) DEFAULT NULL,
-                deadline DATE DEFAULT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            );
+        CREATE TABLE IF NOT EXISTS saramin_jobs (
+            id INT AUTO_INCREMENT PRIMARY KEY,        
+            company VARCHAR(255) NOT NULL,            
+            title VARCHAR(255) NOT NULL,              
+            link TEXT NOT NULL,                           
+            location VARCHAR(255) DEFAULT NULL,       
+            experience VARCHAR(100) DEFAULT NULL,         
+            education VARCHAR(100) DEFAULT NULL,      
+            employment_type VARCHAR(100) DEFAULT NULL,    
+            description TEXT DEFAULT NULL,                
+            deadline DATE DEFAULT NULL,                   
+            salary VARCHAR(100) DEFAULT NULL,             
+            created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
         """)
 
         # favorites 테이블 생성
