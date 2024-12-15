@@ -184,7 +184,7 @@ python crawl_saramin.py
 2024-12-15 13:50:56,307 [INFO] 100개의 데이터를 saramin_python.csv 파일에 저장했습니다.
 2024-12-15 13:50:56,308 [INFO] 크롤링 완료. 다음 크롤링은 24시간 후.
 ```
-  * **flask app 백그라운드 실행**
+ * **flask app 백그라운드 실행**
 ```c
 chmod +x app_start.sh
 
@@ -203,3 +203,10 @@ chmod +x app_stop.sh
 Stopping Flask App with PID 4653...
 Flask App stopped.
 ```
+
+# 기술 스택
+
+- **Database**: MySQL
+- **Backend Framework**: Flask
+- **API Documentation**: Swagger
+- **Authentication**: JWT

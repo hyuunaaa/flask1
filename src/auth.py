@@ -76,7 +76,8 @@ def check_password(password, hashed):
 
 # 회원가입
 '''
-http://127.0.0.1:5000//auth/register
+http://127.0.0.1:5000/auth/register
+http://113.198.66.75:10018/auth/register
 
 Req:
 {

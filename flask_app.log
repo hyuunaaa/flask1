@@ -13,3 +13,11 @@
  * Debugger is active!
  * Debugger PIN: 993-466-119
 127.0.0.1 - - [15/Dec/2024 17:30:16] "GET /jobs HTTP/1.1" 200 -
+ * Detected change in '/home/memtest/study/recruit/flask1/src/auth.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 993-466-119
+ * Detected change in '/home/memtest/study/recruit/flask1/src/auth.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 993-466-119
