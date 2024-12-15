@@ -104,13 +104,18 @@ python crawl_saramin.py
 ```
  * 필요시 .env 수정
 ```c
+# 데이터베이스 설정
 DB_HOST=localhost
 DB_USER=flask_user
 DB_PASSWORD=555555
 DB_NAME=saramin_db
 DB_CHARSET=utf8mb4
 DB_CURSORCLASS=pymysql.cursors.DictCursor
-SWAGGER_HOST=113.198.66.75:10018
+
+# Swagger 설정
+SWAGGER_HOST=127.0.0.1:8080
+#SWAGGER_HOST=113.198.66.75:10018
+
 ``` 
  * **flask app 백그라운드 실행**
 ```c
