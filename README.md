@@ -186,6 +186,9 @@ python crawl_saramin.py
 ```
   * **flask app 백그라운드 실행**
 ```c
+chmod +x app_start.sh
+
+
 ./app_start.sh
 Stale PID file found. Removing it...
 Starting Flask App...
@@ -194,6 +197,8 @@ Flask App started with PID 4653
 
   * **flask app 백그라운드 종료**
 ```c
+chmod +x app_stop.sh
+
 ./app_stop.sh
 Stopping Flask App with PID 4653...
 Flask App stopped.

@@ -1,3 +1,4 @@
+import sys  # 명령행 인자를 읽기 위한 모듈
 from flask import Flask, request, jsonify
 import pymysql
 import base64
@@ -20,10 +21,16 @@ def home():
 # Blueprint 등록
 app.register_blueprint(jobs_bp)
 app.register_blueprint(auth_bp)
-#app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(bookmarks_bp)
 app.register_blueprint(applications_bp)
-        
-#-------------------------
+
 if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000, debug=True)        
+    # 명령행에서 포트 인자 읽기
+    port = 8080  # 기본값 설정
+    if len(sys.argv) > 1:  # 인자가 있을 경우
+        try:
+            port = int(sys.argv[1])  # 첫 번째 인자를 포트로 사용
+        except ValueError:
+            print("Invalid port provided. Using default port 8080.")
+
+    app.run(host='0.0.0.0', port=port, debug=True)
