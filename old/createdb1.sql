@@ -37,7 +37,7 @@ CREATE TABLE IF NOT EXISTS saramin_jobs (
 );
 
 -- favorites 테이블 생성 (사용자의 관심 채용 공고)
-CREATE TABLE IF NOT EXISTS favorites (
+CREATE TABLE IF NOT EXISTS bookmarks (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
     job_id INT NOT NULL,

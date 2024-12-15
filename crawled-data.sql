@@ -59,7 +59,7 @@ CREATE TABLE IF NOT EXISTS saramin_jobs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
-CREATE TABLE IF NOT EXISTS favorites (
+CREATE TABLE IF NOT EXISTS bookmarks (
     id INT AUTO_INCREMENT PRIMARY KEY,             
     user_id VARCHAR(255) NOT NULL,                 
     job_id INT NOT NULL,                           
@@ -89,9 +89,9 @@ DESCRIBE users;
 SELECT '========== STRUCTURE OF saramin_jobs TABLE ==========' AS Section;
 DESCRIBE saramin_jobs;
 
--- 출력: favorites 테이블 구조
-SELECT '========== STRUCTURE OF favorites TABLE ==========' AS Section;
-DESCRIBE favorites;
+-- 출력: bookmarks 테이블 구조
+SELECT '========== STRUCTURE OF bookmarks TABLE ==========' AS Section;
+DESCRIBE bookmarks;
 
 -- 출력: logs 테이블 구조
 SELECT '========== STRUCTURE OF logs TABLE ==========' AS Section;

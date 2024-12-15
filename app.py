@@ -360,7 +360,7 @@ def delete_job(job_id):
 
 # 관심 등록 API(완료)
 '''
-http://127.0.0.1:5000/favorites
+http://127.0.0.1:5000/bookmarks
 {
     "user_id": "test2",
     "job_id": 10,
@@ -368,7 +368,7 @@ http://127.0.0.1:5000/favorites
 }
 
 '''
-@app.route('/favorites', methods=['POST'])
+@app.route('/bookmarks', methods=['POST'])
 def add_favorite():
     data = request.json
     try:
@@ -386,8 +386,8 @@ def add_favorite():
             if not job:
                 return jsonify({"error": "해당 job_id가 saramin_jobs 테이블에 존재하지 않습니다."}), 400
 
-            # favorites 테이블에 삽입
-            sql = "INSERT INTO favorites (user_id, job_id) VALUES (%s, %s)"
+            # bookmarks 테이블에 삽입
+            sql = "INSERT INTO bookmarks (user_id, job_id) VALUES (%s, %s)"
             cursor.execute(sql, (data['user_id'], data['job_id']))
             conn.commit()
 
@@ -399,22 +399,22 @@ def add_favorite():
 
 # 사용자 관심 공고 조회 API(완료)
 '''
-http://127.0.0.1:5000/favorites/test3
+http://127.0.0.1:5000/bookmarks/test3
 '''
-@app.route('/favorites/<string:user_id>', methods=['GET'])
+@app.route('/bookmarks/<string:user_id>', methods=['GET'])
 def get_user_favorites(user_id):
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
             sql = """
             SELECT saramin_jobs.* 
-            FROM favorites
-            JOIN saramin_jobs ON favorites.job_id = saramin_jobs.id
-            WHERE favorites.user_id = %s
+            FROM bookmarks
+            JOIN saramin_jobs ON bookmarks.job_id = saramin_jobs.id
+            WHERE bookmarks.user_id = %s
             """
             cursor.execute(sql, (user_id,))
-            favorites = cursor.fetchall()
-        return jsonify(favorites), 200
+            bookmarks = cursor.fetchall()
+        return jsonify(bookmarks), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
     finally:
