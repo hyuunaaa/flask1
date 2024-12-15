@@ -1,14 +1,20 @@
 import pymysql
+from dotenv import load_dotenv  # .env 파일 로드
+import os  # 환경변수 접근
 
-# MySQL 데이터베이스 연결 설정
+# .env 파일 로드
+load_dotenv()
+
+# MySQL 데이터베이스 설정 (환경변수에서 로드)
 db_config = {
-    "host": "localhost",
-    "user": "flask_user",
-    "password": "555555",
-    "database": "saramin_db",
-    "charset": "utf8mb4",
-    "cursorclass": pymysql.cursors.DictCursor
+    "host": os.getenv("DB_HOST"),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME"),
+    "charset": os.getenv("DB_CHARSET", "utf8mb4"),
+    "cursorclass": pymysql.cursors.DictCursor    
 }
+
 
 # MySQL 연결 함수
 def get_db_connection():

@@ -2,25 +2,30 @@
 
 ## 웹서비스 설계 과제3
 
-### 설치 및 실행 방법
-  * MYSQL 계정 생성
+
+### 파이썬 가상환경 환경 설정
+  * python 가상환경 설정
+```c
+python3 -m venv ../flask_env
+source ../flask_env/bin/activate
+pip install -r requirements.txt
+```   
+
+### MYSQL 최초 계정 등록
+  * 최초 설치시에는 아무런 계정이 없으므로, root와 flask_user 계정을 생성함
+  * root는 관리용, flas_user는 앱 개발용임
 ```c
 sudo mysql
 
-mysql> ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '555555';
-Query OK, 0 rows affected (0.00 sec)
+ALTER USER 'root'@'localhost' IDENTIFIED WITH mysql_native_password BY '555555';
+ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '555555';
 
-mysql> ALTER USER 'root'@'%' IDENTIFIED WITH mysql_native_password BY '555555';
-Query OK, 0 rows affected (0.00 sec)
+ALTER USER 'flask_user'@'localhost' IDENTIFIED WITH mysql_native_password BY '555555';
+ALTER USER 'flask_user'@'%' IDENTIFIED WITH mysql_native_password BY '555555';
 
-mysql> ALTER USER 'flask_user'@'localhost' IDENTIFIED WITH mysql_native_password BY '555555';
-mysql> ALTER USER 'flask_user'@'%' IDENTIFIED WITH mysql_native_password BY '555555';
+FLUSH PRIVILEGES;
+commit;
 
-mysql> FLUSH PRIVILEGES;
-Query OK, 0 rows affected (0.01 sec)
-
-mysql> commit;
-Query OK, 0 rows affected (0.00 sec)
 ```  
   * **MYSQL 데이터베이스 생성**
 ```c
@@ -164,6 +169,7 @@ users
 ('created_at', 'datetime', 'YES', '', 'CURRENT_TIMESTAMP', 'DEFAULT_GENERATED')
 ```
   * **크롤러 실행(로그 생성)**
+    * 클로러를 실행하면 saramin_python.csv를 로컬에 만들고, DB에도 저장함
 ```c
 python crawl_saramin.py
 2024-12-15 13:50:35,412 [INFO] 데이터베이스가 성공적으로 초기화되었습니다.
@@ -177,4 +183,18 @@ python crawl_saramin.py
 2024-12-15 13:50:56,306 [INFO] 100개의 데이터를 데이터베이스에 저장했습니다.
 2024-12-15 13:50:56,307 [INFO] 100개의 데이터를 saramin_python.csv 파일에 저장했습니다.
 2024-12-15 13:50:56,308 [INFO] 크롤링 완료. 다음 크롤링은 24시간 후.
+```
+  * **flask app 백그라운드 실행**
+```c
+./app_start.sh
+Stale PID file found. Removing it...
+Starting Flask App...
+Flask App started with PID 4653
+```
+
+  * **flask app 백그라운드 종료**
+```c
+./app_stop.sh
+Stopping Flask App with PID 4653...
+Flask App stopped.
 ```

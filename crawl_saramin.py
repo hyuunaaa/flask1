@@ -9,6 +9,11 @@ import csv  # CSV 파일 저장을 위한 모듈
 import random
 from requests.adapters import HTTPAdapter
 from requests.packages.urllib3.util.retry import Retry
+from dotenv import load_dotenv  # .env 파일 로드
+import os  # 환경변수 접근
+
+# .env 파일 로드
+load_dotenv()
 
 # 로깅 설정
 logging.basicConfig(
@@ -20,13 +25,14 @@ logging.basicConfig(
     ]
 )
 
-# MySQL 데이터베이스 설정
+# MySQL 데이터베이스 설정 (환경변수에서 로드)
 db_config = {
-    "host": "localhost",
-    "user": "flask_user",
-    "password": "555555",
-    "database": "saramin_db",
-    "charset": "utf8mb4"
+    "host": os.getenv("DB_HOST"),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME"),
+    "charset": os.getenv("DB_CHARSET", "utf8mb4"),
+    "cursorclass": pymysql.cursors.DictCursor    
 }
 
 # 여러 User-Agent 목록 (로테이션 사용)

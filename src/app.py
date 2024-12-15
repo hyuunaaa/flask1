@@ -20,6 +20,7 @@ def home():
 # Blueprint 등록
 app.register_blueprint(jobs_bp)
 app.register_blueprint(auth_bp)
+#app.register_blueprint(auth_bp, url_prefix='/auth')
 app.register_blueprint(bookmarks_bp)
 app.register_blueprint(applications_bp)
         

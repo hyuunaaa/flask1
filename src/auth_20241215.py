@@ -30,17 +30,18 @@ def get_db_connection():
         cursorclass=pymysql.cursors.DictCursor
     )
 
- # JWT 토큰 생성 함수
+# JWT 토큰 생성 함수
 def create_jwt_token(user_id):
     """
     JWT 토큰 생성
     """
     payload = {
-        "user_id": user_id,
-        "exp": datetime.utcnow() + timedelta(hours=1),  # 1시간 유효
-        "iat": datetime.utcnow(),  # 토큰 발급 시간
+        'user_id': user_id,
+        'exp': datetime.utcnow() + timedelta(hours=1),  # 1시간 유효
+        'iat': datetime.utcnow()  # 토큰 발급 시간
     }
-    return jwt.encode(payload, SECRET_KEY, algorithm="HS256")
+    token = jwt.encode(payload, SECRET_KEY, algorithm='HS256')
+    return token
 
 # 토큰 검증 미들웨어
 def token_required(f):
@@ -48,59 +49,52 @@ def token_required(f):
 
     @wraps(f)
     def decorated(*args, **kwargs):
-        token = request.headers.get("Authorization")
+        token = request.headers.get('Authorization')
         if not token:
             return jsonify({"error": "토큰이 제공되지 않았습니다."}), 401
 
         try:
             # JWT 검증
-            token = token.split(" ")[1]  # "Bearer <token>"에서 토큰 부분만 추출
-            decoded = jwt.decode(token, SECRET_KEY, algorithms=["HS256"])
-            g.user_id = decoded["user_id"]  # 글로벌 컨텍스트에 사용자 ID 추가
+            decoded = jwt.decode(token, SECRET_KEY, algorithms=['HS256'])
+            request.user_id = decoded['user_id']  # 요청 객체에 user_id 추가
         except jwt.ExpiredSignatureError:
             return jsonify({"error": "토큰이 만료되었습니다."}), 401
         except jwt.InvalidTokenError:
             return jsonify({"error": "유효하지 않은 토큰입니다."}), 401
 
         return f(*args, **kwargs)
-
     return decorated
 
 # 비밀번호 암호화
 def hash_password(password):
-    return bcrypt.hashpw(password.encode("utf-8"), bcrypt.gensalt()).decode("utf-8")
+    return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
 
 # 비밀번호 검증
 def check_password(password, hashed):
-    return bcrypt.checkpw(password.encode("utf-8"), hashed.encode("utf-8"))
+    return bcrypt.checkpw(password.encode('utf-8'), hashed.encode('utf-8'))
 
 # 회원가입
 '''
 http://127.0.0.1:5000//auth/register
 
-Req:
 {
     "user_id": "test1",
     "email": "test1@example.com",
     "password": "111111",
     "name": "name1"
 }
-Res:
-{
-    "message": "회원가입 성공"
-}
 '''
-# 회원가입
-@auth_bp.route("/auth/register", methods=["POST"])
+@auth_bp.route('/auth/register', methods=['POST'])
 def register():
     data = request.json
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
             # 비밀번호 암호화
-            hashed_password = hash_password(data["password"])
+            hashed_password = hash_password(data['password'])
+
             sql = "INSERT INTO users (user_id, email, password, name) VALUES (%s, %s, %s, %s)"
-            cursor.execute(sql, (data["user_id"], data["email"], hashed_password, data["name"]))
+            cursor.execute(sql, (data['user_id'], data['email'], hashed_password, data['name']))
             conn.commit()
 
         return jsonify({"message": "회원가입 성공"}), 201
@@ -125,20 +119,23 @@ Res:
     "token": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdDEiLCJleHAiOjE3MzQyNDUwMzksImlhdCI6MTczNDI0MTQzOX0.68WY79NYhyKgn6TQWDt9Ewu-_7dvVofEe2hWfrVNqZo"
 }
 '''
-@auth_bp.route("/auth/login", methods=["POST"])
+@auth_bp.route('/auth/login', methods=['POST'])
 def login():
-    data = request.json
+    data = request.json  # 요청 데이터
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
+            # user_id를 기준으로 사용자를 조회
             sql = "SELECT user_id, password FROM users WHERE user_id = %s"
-            cursor.execute(sql, (data["user_id"],))
+            cursor.execute(sql, (data['user_id'],))
             user = cursor.fetchone()
 
-        if not user or not check_password(data["password"], user["password"]):
+        # 사용자 존재 여부와 비밀번호 확인
+        if not user or not check_password(data['password'], user['password']):
             return jsonify({"error": "user_id 또는 비밀번호가 잘못되었습니다."}), 401
 
-        token = create_jwt_token(user["user_id"])
+        # JWT 토큰 발급
+        token = create_jwt_token(user['user_id'])
         return jsonify({"message": "로그인 성공", "token": token}), 200
     except pymysql.MySQLError as e:
         return jsonify({"error": str(e)}), 500
@@ -147,40 +144,22 @@ def login():
 
 
 # 토큰 갱신
-# 미들웨어가 적용
-@auth_bp.route("/auth/token/refresh", methods=["POST"])
+@auth_bp.route('/token/refresh', methods=['POST'])
 @token_required
 def refresh_token():
     try:
-        # g 객체에서 user_id 가져오기
-        token = create_jwt_token(g.user_id)
+        # 기존 user_id를 기반으로 새로운 토큰 생성
+        token = create_jwt_token(request.user_id)
         return jsonify({"message": "토큰 갱신 성공", "token": token}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-
-'''
-http://127.0.0.1:5000/auth/protected
-'''
-# 보호된 경로 예제
-@auth_bp.route("/auth/protected", methods=["GET"])
-@token_required
-def protected_route():
-    return jsonify({"message": "인증된 사용자만 접근 가능합니다.", "user_id": g.user_id}), 200
-
 # 회원 정보 조회 API(완료)
 '''
-Req:
 http://127.0.0.1:5000/auth/profile/test1
-
-Res:
-{
-    "created_at": "Sun, 15 Dec 2024 14:32:29 GMT",
-    "email": "test1@example.com",
-    "name": "name1",
-    "user_id": "test1"
-}
-
+http://127.0.0.1:5000/auth/profile/test2
+http://127.0.0.1:5000/auth/profile/test3
+http://127.0.0.1:5000/auth/profile/test4
 
 '''
 @auth_bp.route('/auth/profile/<string:user_id>', methods=['GET'])

@@ -50,7 +50,8 @@ deactivate
 o 필요 프로그램 설치
 pip install -r requirements.txt
 없으면, 아래 명령어로 설치
-pip install flask pymysql requests beautifulsoup4 pandas schedule gunicorn
+pip install flask pymysql requests beautifulsoup4 pandas schedule gunicorn mysql-connector-python bcrypt PyJWT
+pip install mysql-connector-python
 
 o requirements.txt 만들기
 pip freeze > requirements.txt
@@ -108,6 +109,9 @@ bind-address=0.0.0.0		    # 추가
 
 sudo systemctl restart mysql
  service mysql restart
+
+
+
 
 - dbeaver 설정
 dbeaver의 CONNECTION-Driver properties-allowPublicKeyRetrieval, TRUE 설정
