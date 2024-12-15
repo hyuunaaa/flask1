@@ -2,10 +2,14 @@
  * Debug mode: on
 [31m[1mWARNING: This is a development server. Do not use it in a production deployment. Use a production WSGI server instead.[0m
  * Running on all addresses (0.0.0.0)
- * Running on http://127.0.0.1:5000
- * Running on http://172.28.243.107:5000
+ * Running on http://127.0.0.1:8080
+ * Running on http://172.28.243.107:8080
 [33mPress CTRL+C to quit[0m
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 993-466-119
-127.0.0.1 - - [15/Dec/2024 16:00:43] "[35m[1mPOST /auth/register HTTP/1.1[0m" 201 -
+ * Detected change in '/home/memtest/study/recruit/flask1/src/jobs.py', reloading
+ * Restarting with stat
+ * Debugger is active!
+ * Debugger PIN: 993-466-119
+127.0.0.1 - - [15/Dec/2024 17:30:16] "GET /jobs HTTP/1.1" 200 -

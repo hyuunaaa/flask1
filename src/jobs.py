@@ -8,7 +8,8 @@ jobs_bp = Blueprint('jobs', __name__)
 
 # 채용 공고 조회 API(완료)
 '''
-http://127.0.0.1:5000/jobs
+http://127.0.0.1:8080/jobs
+http://113.198.66.75:10018/jobs
 '''
 @jobs_bp.route('/jobs', methods=['GET'])
 def get_jobs():
