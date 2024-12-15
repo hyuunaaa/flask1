@@ -5,13 +5,14 @@ from datetime import datetime, timedelta  # timedelta 추가
 from db import get_db_connection  # get_db_connection 임포트
 import bcrypt
 from flasgger import swag_from
+from db import get_db_connection
 
 # Flask Blueprint 설정
 auth_bp = Blueprint('auth', __name__)
 
 # JWT Secret Key
 SECRET_KEY = 'your_secret_key'
-
+'''
 # DB 연결 설정
 db_config = {
     "host": "localhost",
@@ -21,16 +22,18 @@ db_config = {
     "charset": "utf8mb4"
 }
 
+
 # DB 연결 함수
 def get_db_connection():
     return pymysql.connect(
         host=db_config["host"],
+        port=int(os.getenv("DB_PORT", 3306)
         user=db_config["user"],
         password=db_config["password"],
         database=db_config["database"],
         cursorclass=pymysql.cursors.DictCursor
     )
-
+'''
  # JWT 토큰 생성 함수
 def create_jwt_token(user_id):
     """
@@ -147,6 +150,8 @@ def register():
               example: 데이터베이스 에러 메시지
     """    
     data = request.json
+    conn = None
+    cursor = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -160,7 +165,8 @@ def register():
     except pymysql.MySQLError as e:
         return jsonify({"error": str(e)}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 # 로그인
 '''
@@ -576,6 +582,8 @@ def change_password(user_id):
             }
     """
     data = request.json
+    conn = None
+    cursor = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:

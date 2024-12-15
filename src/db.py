@@ -8,6 +8,7 @@ load_dotenv()
 # MySQL 데이터베이스 설정 (환경변수에서 로드)
 db_config = {
     "host": os.getenv("DB_HOST"),
+    "port": int(os.getenv("DB_PORT")),
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
     "database": os.getenv("DB_NAME"),
