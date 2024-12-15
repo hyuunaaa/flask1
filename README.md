@@ -27,7 +27,7 @@ FLUSH PRIVILEGES;
 commit;
 
 ```  
-  * **MYSQL 데이터베이스 생성**
+  * **MYSQL 데이터베이스(모델) 생성**
 ```c
 python initdb.py
 Database and user setup completed successfully.
@@ -210,3 +210,28 @@ Flask App stopped.
 - **Backend Framework**: Flask
 - **API Documentation**: Swagger
 - **Authentication**: JWT
+
+# 📂 프로젝트 폴더 구조
+
+```plaintext
+├── 📂 src                  # 주요 소스 코드 디렉토리
+│   ├── 🟨 app.py               # flask 애플리케이션의 진입점 스크립트    
+│   ├── 🟨 applications.py      # 지원서 관련 APi 라우트 스크립트
+│   ├── 🟨 auth.py              # auth 관련 API 라우트 스크립트
+│   ├── 🟨 bookmarks.py         # 북마크 관련 API 라우트 스크립트
+│   ├── 🟨 jobs.py              # 채용공고 관련 API 라우트 스크립트
+│   ├── 🟨 resume.py            # 이력서 관련 API 라우트 스크립트
+│   └── 🟨 db.py                # DB 접속 정보(.env) 로드 및 접속 스크립트
+├── 📄 .env                 # 환경 변수 파일
+├── 📄 crawler.log          # 로그 파일
+├── 🐍 crawl_saramin.py     # 사람인 크롤러 스크립트
+├── 🟨 requirements.txt     # 크롤러가 생성한 사람인 DB
+├── 🟨 saramin_python.csv   # 파이썬 의존성 모듈 목록 파일
+├── 🟨 initdb.py            # MYSQL 로그인 모델, 사용자 모델, 묵마크 모델 등 8개 초기화/생성 스크립트
+├── 🟨 csv2db.py            # 로컬 .csv -> MYSQL DB(saramin_db) 저장 스크립트
+├── 🟨 app_start.sh         # flask 애플리케이션 백그라운드 실행 스크립트
+├── 🟨 app_stop.sh          # flask 애플리케이션 종료 스크립트
+├── 🟨 flask_app.log        # flask 애플리케이션 실행 로그
+├── 🟨 flask_app.log        # flask 애플리케이션 실행 로그
+└── 🟦 README.md            # 프로젝트 설명 파일
+```

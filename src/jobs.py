@@ -13,6 +13,65 @@ http://113.198.66.75:10018/jobs
 '''
 @jobs_bp.route('/jobs', methods=['GET'])
 def get_jobs():
+    """
+    채용 공고 목록 조회 API
+    ---
+    tags:
+      - Job Posting(채용공고 관련 API)
+    responses:
+      200:
+        description: 채용 공고 목록 조회 성공
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: "채용 공고 ID"
+              company:
+                type: string
+                description: "회사 이름"
+              title:
+                type: string
+                description: "공고 제목"
+              location:
+                type: string
+                description: "근무 지역"
+              salary:
+                type: string
+                description: "연봉"
+              description:
+                type: string
+                description: "공고 설명"
+        examples:
+          application/json: |
+            [
+              {
+                "id": 1,
+                "company": "ABC Corp",
+                "title": "Software Engineer",
+                "location": "Seoul",
+                "salary": "50M KRW",
+                "description": "Job description here"
+              },
+              {
+                "id": 2,
+                "company": "XYZ Inc",
+                "title": "Data Scientist",
+                "location": "Busan",
+                "salary": "55M KRW",
+                "description": "Another job description here"
+              }
+            ]
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              """
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -27,6 +86,65 @@ def get_jobs():
 # 채용 공고 상세 조회 API(완료)
 @jobs_bp.route('/jobs/<int:job_id>', methods=['GET'])
 def get_job(job_id):
+    """
+    채용 공고 상세 조회 API
+    ---
+    tags:
+      - Job Posting(채용공고 관련 API)
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        type: integer
+        description: 상세 조회할 채용 공고 ID
+    responses:
+      200:
+        description: 채용 공고 상세 조회 성공
+        schema:
+          type: object
+          properties:
+            id:
+              type: integer
+            company:
+              type: string
+            title:
+              type: string
+            location:
+              type: string
+            salary:
+              type: string
+            description:
+              type: string
+        examples:
+          application/json: |
+            {
+              "id": 1,
+              "company": "ABC Corp",
+              "title": "Software Engineer",
+              "location": "Seoul",
+              "salary": "50M KRW",
+              "description": "Job description here"
+            }
+      404:
+        description: 공고를 찾을 수 없음
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "채용 공고를 찾을 수 없습니다."
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+    """
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -56,6 +174,59 @@ http://127.0.0.1:5000/jobs
 '''
 @jobs_bp.route('/jobs', methods=['POST'])
 def add_job():
+    """
+    채용 공고 등록 API
+    ---
+    tags:
+      - Job Posting(채용공고 관련 API)
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            company:
+              type: string
+              description: "회사 이름"
+              example: "ABC Corp"
+            title:
+              type: string
+              description: "공고 제목"
+              example: "Software Engineer"
+            location:
+              type: string
+              description: "근무 지역"
+              example: "Seoul"
+            salary:
+              type: string
+              description: "연봉"
+              example: "50M KRW"
+            description:
+              type: string
+              description: "공고 설명"
+              example: "Job description here"
+    responses:
+      201:
+        description: 공고 등록 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "채용 공고 등록 성공"
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+    """
     data = request.json
     try:
         conn = get_db_connection()
@@ -89,6 +260,59 @@ http://127.0.0.1:5000/jobs/121
 '''
 @jobs_bp.route('/jobs/<int:job_id>', methods=['PUT'])
 def update_job(job_id):
+    """
+    채용 공고 수정 API
+    ---
+    tags:
+      - Job Posting(채용공고 관련 API)
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        type: integer
+        description: 수정할 채용 공고 ID
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            company:
+              type: string
+              description: "회사 이름"
+            title:
+              type: string
+              description: "공고 제목"
+            location:
+              type: string
+              description: "근무 지역"
+            salary:
+              type: string
+              description: "연봉"
+            description:
+              type: string
+              description: "공고 설명"
+    responses:
+      200:
+        description: 공고 수정 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "채용 공고 수정 성공"
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+    """
     data = request.json
     try:
         conn = get_db_connection()
@@ -115,6 +339,39 @@ http://127.0.0.1:5000/jobs/122
 '''
 @jobs_bp.route('/jobs/<int:job_id>', methods=['DELETE'])
 def delete_job(job_id):
+    """
+    채용 공고 삭제 API
+    ---
+    tags:
+      - Job Posting(채용공고 관련 API)
+    parameters:
+      - name: job_id
+        in: path
+        required: true
+        type: integer
+        description: 삭제할 채용 공고 ID
+    responses:
+      200:
+        description: 공고 삭제 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "채용 공고 삭제 성공"
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+    """
+
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:

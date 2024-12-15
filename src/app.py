@@ -4,13 +4,16 @@ import pymysql
 import base64
 import json
 from datetime import datetime
+from db import get_db_connection  # get_db_connection 임포트
+from flasgger import Swagger
 
 from jobs import jobs_bp  # jobs.py에서 Blueprint 임포트
 from auth import auth_bp  # auth.py에서 Blueprint 임포트
 from bookmarks import bookmarks_bp  # bookmarks.py에서 Blueprint 임포트
 from applications import applications_bp  # applications.py에서 Blueprint 임포트
-from db import get_db_connection  # get_db_connection 임포트
-from flasgger import Swagger
+from resume import resume_bp  # resume.py에서 Blueprint 임포트
+from review import review_bp  # review.py에서 Blueprint 임포트
+
 
 app = Flask(__name__)
 
@@ -54,6 +57,8 @@ app.register_blueprint(jobs_bp)
 app.register_blueprint(auth_bp)
 app.register_blueprint(bookmarks_bp)
 app.register_blueprint(applications_bp)
+app.register_blueprint(resume_bp)
+app.register_blueprint(review_bp)
 
 if __name__ == '__main__':
     # 명령행에서 포트 인자 읽기

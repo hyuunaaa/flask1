@@ -293,6 +293,82 @@ Res:
 @auth_bp.route('/auth/profile/<string:user_id>', methods=['GET'])
 #@swag_from('docs/auth.yml')
 def auth_user(user_id):
+    """
+    회원 정보 조회 API
+    ---
+    tags:
+      - "Authentication(회원가입/로그인 관련 API)"
+    parameters:
+      - name: user_id
+        in: path
+        type: string
+        required: true
+        description: 조회할 사용자 ID
+    responses:
+      200:
+        description: 사용자 정보 조회 성공
+        schema:
+          type: object
+          properties:
+            user_id:
+              type: string
+              description: 사용자 ID
+            email:
+              type: string
+              description: 이메일 주소
+            name:
+              type: string
+              description: 사용자 이름
+            created_at:
+              type: string
+              description: 생성 날짜 (ISO 형식)
+        examples:
+          application/json: |
+            {
+              "user_id": "test1",
+              "email": "test1@example.com",
+              "name": "Kim Hyuna",
+              "created_at": "2024-12-15T14:32:29Z"
+            }
+      404:
+        description: 사용자를 찾을 수 없음
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "사용자를 찾을 수 없습니다."
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "Internal Server Error"
+            }
+    """
+    try:
+        conn = get_db_connection()
+        with conn.cursor() as cursor:
+            sql = "SELECT user_id, email, name, created_at FROM users WHERE user_id=%s"
+            cursor.execute(sql, (user_id,))
+            user = cursor.fetchone()
+        if user:
+            return jsonify(user), 200
+        else:
+            return jsonify({"message": "사용자를 찾을 수 없습니다."}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    finally:
+        conn.close()
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -327,8 +403,71 @@ http://127.0.0.1:5000/auth/profile/test4
 @auth_bp.route('/autu/profile/<string:user_id>', methods=['PUT'])
 #@swag_from('docs/auth.yml')
 def autu_update_user(user_id):
+    
+    """
+    회원 정보 수정 API
+    ---
+    tags:
+      - "Authentication(회원가입/로그인 관련 API)"
+    parameters:
+      - name: user_id
+        in: path
+        type: string
+        required: true
+        description: 수정할 사용자 ID
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            email:
+              type: string
+              example: "newemail@example.com"
+            name:
+              type: string
+              example: "New Name"
+    responses:
+      200:
+        description: 회원 정보 수정 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "회원 정보 수정 성공"
+            }
+      400:
+        description: 잘못된 요청
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "Invalid request format"
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "Internal Server Error"
+            }
+    """
     print(f"Endpoint hit: /users/{user_id} with method PUT")
     print(f"Request JSON: {request.json}")
+    
     data = request.json
     try:
         conn = get_db_connection()
@@ -364,6 +503,78 @@ http://127.0.0.1:5000/auth/profile/change_password/test4
 def change_password(user_id):
     """
     비밀번호 변경 API
+    ---
+    tags:
+      - "Authentication(회원가입/로그인 관련 API)"
+    parameters:
+      - name: user_id
+        in: path
+        type: string
+        required: true
+        description: 비밀번호를 변경할 사용자 ID
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            current_password:
+              type: string
+              description: "현재 비밀번호"
+              example: "oldpassword123"
+            new_password:
+              type: string
+              description: "새 비밀번호"
+              example: "newpassword123"
+    responses:
+      200:
+        description: 비밀번호 변경 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "비밀번호 변경 성공"
+            }
+      400:
+        description: 현재 비밀번호가 일치하지 않음
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "현재 비밀번호가 일치하지 않습니다."
+            }
+      404:
+        description: user_id가 존재하지 않음
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "해당 user_id가 존재하지 않습니다."
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "Internal Server Error"
+            }
     """
     data = request.json
     try:
@@ -401,6 +612,56 @@ def change_password(user_id):
 @auth_bp.route('/autu/profile/<string:user_id>', methods=['DELETE'])
 #@swag_from('docs/auth.yml')
 def delete_user(user_id):
+    
+    """
+    회원 탈퇴 API
+    ---
+    tags:
+      - "Authentication(회원가입/로그인 관련 API)"
+    parameters:
+      - name: user_id
+        in: path
+        type: string
+        required: true
+        description: 탈퇴할 사용자 ID
+    responses:
+      200:
+        description: 회원 탈퇴 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "회원 탈퇴 성공"
+            }
+      404:
+        description: user_id가 존재하지 않음
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "해당 user_id가 존재하지 않습니다."
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "Internal Server Error"
+            }
+    """
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
@@ -419,3 +680,4 @@ def delete_user(user_id):
         status=200,
         mimetype='application/json'
     )             
+    

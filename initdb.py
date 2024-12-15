@@ -1,13 +1,32 @@
+import pymysql
 import mysql.connector
 from mysql.connector import errorcode
+from dotenv import load_dotenv  # .env 파일 로드
+import os  # 환경변수 접근
 
-DB_HOST = "localhost"
-DB_USER = "root"
-DB_PASSWORD = "555555"
+# .env 파일 로드
+load_dotenv()
+
+# MySQL 데이터베이스 설정 (환경변수에서 로드)
+db_config = {
+    "host": os.getenv("DB_HOST"),
+    "user": os.getenv("DB_USER"),
+    "password": os.getenv("DB_PASSWORD"),
+    "database": os.getenv("DB_NAME"),
+    "charset": os.getenv("DB_CHARSET", "utf8mb4"),
+    "cursorclass": pymysql.cursors.DictCursor    
+}
 
 def setup_database():
+    conn = None
+    cursor = None    
     try:
-        conn = mysql.connector.connect(host=DB_HOST, user=DB_USER, password=DB_PASSWORD)
+        # MySQL 데이터베이스 연결
+        conn = mysql.connector.connect(
+            host=db_config["host"],
+            user=db_config["user"],
+            password=db_config["password"]
+        )
         cursor = conn.cursor()
 
         # 데이터베이스 삭제
@@ -36,8 +55,12 @@ def setup_tables():
     conn = None
     cursor = None
     try:
+        # MySQL 데이터베이스 연결
         conn = mysql.connector.connect(
-            host=DB_HOST, user=DB_USER, password=DB_PASSWORD, database="saramin_db"
+            host=db_config["host"],
+            user=db_config["user"],
+            password=db_config["password"],
+            database=db_config["database"]
         )
         cursor = conn.cursor()
 
@@ -71,9 +94,9 @@ def setup_tables():
         );
         """)
 
-        # favorites 테이블 생성
+        # bookmarks 테이블 생성
         cursor.execute("""
-            CREATE TABLE IF NOT EXISTS favorites (
+            CREATE TABLE IF NOT EXISTS bookmarks (
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 user_id VARCHAR(255) NOT NULL,
                 job_id INT NOT NULL,
@@ -126,8 +149,9 @@ def setup_tables():
                 user_id VARCHAR(255) NOT NULL UNIQUE,
                 email VARCHAR(255) NOT NULL UNIQUE,
                 password VARCHAR(255) NOT NULL,
-                name VARCHAR(255) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+                job_id INT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE
             );
         """)
 

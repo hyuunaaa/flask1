@@ -17,6 +17,71 @@ http://127.0.0.1:5000/applications
 '''
 @applications_bp.route('/applications', methods=['POST'])  # URL이 '/apply_'로 명확히 매핑됨
 def apply_job():  # 함수 이름을 명확히 변경
+    """
+    지원 등록 API
+    ---
+    tags:
+      - Apply(지원 관련 API)
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            user_id:
+              type: string
+              description: "지원하는 사용자 ID"
+              example: "test_user"
+            job_id:
+              type: integer
+              description: "지원할 채용 공고 ID"
+              example: 123
+    responses:
+      201:
+        description: 지원 등록 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "지원 등록 성공"
+            }
+      400:
+        description: 잘못된 요청 (존재하지 않는 user_id 또는 job_id)
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "해당 user_id가 users 테이블에 존재하지 않습니다."
+            }
+      409:
+        description: 이미 지원한 공고
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "이미 해당 공고에 지원하셨습니다."
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+    """
     data = request.json
     try:
         conn = get_db_connection()
@@ -67,6 +132,59 @@ http://127.0.0.1:5000/applications/cancel
 '''
 @applications_bp.route('/applications/cancel', methods=['DELETE'])
 def cancel_application():
+    """
+    지원 취소 API
+    ---
+    tags:
+      - Apply(지원 관련 API)
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          properties:
+            user_id:
+              type: string
+              description: "취소할 사용자 ID"
+              example: "test_user"
+            job_id:
+              type: integer
+              description: "취소할 채용 공고 ID"
+              example: 123
+    responses:
+      200:
+        description: 지원 취소 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "지원 취소 성공"
+            }
+      404:
+        description: 지원 내역이 없음
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+        examples:
+          application/json: |
+            {
+              "error": "해당 지원 내역이 없습니다."
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+    """
     data = request.json
     try:
         conn = get_db_connection()
@@ -97,6 +215,83 @@ http://127.0.0.1:5000/applications/list/test2
 '''
 @applications_bp.route('/applications/list/<string:user_id>', methods=['GET'])
 def get_application_list(user_id):
+    """
+    지원 목록 조회 API
+    ---
+    tags:
+      - Apply(지원 관련 API)
+    parameters:
+      - name: user_id
+        in: path
+        required: true
+        type: string
+        description: "지원 내역을 조회할 사용자 ID"
+    responses:
+      200:
+        description: 지원 목록 조회 성공
+        schema:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+                description: "지원 ID"
+              job_id:
+                type: integer
+                description: "채용 공고 ID"
+              title:
+                type: string
+                description: "채용 공고 제목"
+              company:
+                type: string
+                description: "회사 이름"
+              location:
+                type: string
+                description: "근무 지역"
+              created_at:
+                type: string
+                description: "지원 날짜 (ISO 형식)"
+        examples:
+          application/json: |
+            [
+              {
+                "id": 1,
+                "job_id": 123,
+                "title": "Software Engineer",
+                "company": "ABC Corp",
+                "location": "Seoul",
+                "created_at": "2024-12-15T10:00:00Z"
+              },
+              {
+                "id": 2,
+                "job_id": 124,
+                "title": "Data Scientist",
+                "company": "XYZ Inc",
+                "location": "Busan",
+                "created_at": "2024-12-14T14:00:00Z"
+              }
+            ]
+      404:
+        description: 지원 내역이 없음
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+        examples:
+          application/json: |
+            {
+              "message": "지원 내역이 없습니다."
+            }
+      500:
+        description: 서버 오류
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+    """
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
