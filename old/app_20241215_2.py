@@ -3,18 +3,9 @@ import pymysql
 import base64
 import json
 from datetime import datetime
+from db import get_db_connection  # get_db_connection 임포트
 
 app = Flask(__name__)
-
-# MySQL 데이터베이스 연결 함수
-def get_db_connection():
-    return pymysql.connect(
-        host='localhost',
-        user='flask_user',
-        password='555555',
-        database='saramin_db',
-        cursorclass=pymysql.cursors.DictCursor
-    )
 
 # 기본 루트 경로
 @app.route('/', methods=['GET'])

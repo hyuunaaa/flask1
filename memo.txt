@@ -149,8 +149,8 @@ sudo service mysql stop
 ///////////////////////////////////
 2. 명령줄에서 직접 실행
 MySQL 명령어를 사용해 SQL 파일 실행:
-
-mysql -u root -p < /path/to/db_create.sql
+1
+mysql -u root -p < ./crawled-db.sql
 MySQL 서버가 파일 내의 명령어를 실행하고 설정을 완료합니다.
 실행 결과 확인:
 
