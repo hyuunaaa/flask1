@@ -21,3 +21,9 @@
  * Restarting with stat
  * Debugger is active!
  * Debugger PIN: 993-466-119
+ * Detected change in '/home/memtest/study/recruit/flask1/src/app.py', reloading
+ * Restarting with stat
+Traceback (most recent call last):
+  File "/home/memtest/study/recruit/flask1/./src/app.py", line 43, in <module>
+    Swagger(app, template=swagger_template, config=swagger_config)
+NameError: name 'Swagger' is not defined

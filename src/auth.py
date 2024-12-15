@@ -4,6 +4,7 @@ import pymysql
 from datetime import datetime, timedelta  # timedelta 추가
 from db import get_db_connection  # get_db_connection 임포트
 import bcrypt
+from flasgger import swag_from
 
 # Flask Blueprint 설정
 auth_bp = Blueprint('auth', __name__)
@@ -94,6 +95,57 @@ Res:
 # 회원가입
 @auth_bp.route("/auth/register", methods=["POST"])
 def register():
+    """
+    회원가입 API
+    ---
+    tags:
+      - "Authentication(회원가입/로그인 관련 API)"
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+            - user_id
+            - email
+            - password
+            - name
+          properties:
+            user_id:
+              type: string
+              example: test_user
+              description: 사용자 ID
+            email:
+              type: string
+              example: test@example.com
+              description: 사용자 이메일
+            password:
+              type: string
+              example: password123
+              description: 사용자 비밀번호
+            name:
+              type: string
+              example: John Doe
+              description: 사용자 이름
+    responses:
+      201:
+        description: 회원가입 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 회원가입 성공
+      500:
+        description: 데이터베이스 작업 중 에러 발생
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: 데이터베이스 에러 메시지
+    """    
     data = request.json
     try:
         conn = get_db_connection()
@@ -127,7 +179,60 @@ Res:
 }
 '''
 @auth_bp.route("/auth/login", methods=["POST"])
+#@swag_from('docs/auth.yml')
 def login():
+    """
+    로그인 API
+    ---
+    tags:
+      - "Authentication(회원가입/로그인 관련 API)"
+    parameters:
+      - name: body
+        in: body
+        required: true
+        schema:
+          type: object
+          required:
+            - user_id
+            - password
+          properties:
+            user_id:
+              type: string
+              example: test1
+              description: 사용자 ID
+            password:
+              type: string
+              example: "111111"
+              description: 사용자 비밀번호
+    responses:
+      200:
+        description: 로그인 성공
+        schema:
+          type: object
+          properties:
+            message:
+              type: string
+              example: 로그인 성공
+            token:
+              type: string
+              example: "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoidGVzdDEiLCJleHAiOjE2ODg2MzM4MDAsImlhdCI6MTY4ODYzMDAwMH0.uHvklwKBBzDl7R_kNHhjCMVPlUSfs1EoTxHqXW2HV6g"
+      401:
+        description: 인증 실패 (user_id 또는 비밀번호 오류)
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: user_id 또는 비밀번호가 잘못되었습니다.
+      500:
+        description: 데이터베이스 작업 중 에러 발생
+        schema:
+          type: object
+          properties:
+            error:
+              type: string
+              example: 데이터베이스 에러 메시지
+    """    
     data = request.json
     try:
         conn = get_db_connection()
@@ -150,6 +255,7 @@ def login():
 # 토큰 갱신
 # 미들웨어가 적용
 @auth_bp.route("/auth/token/refresh", methods=["POST"])
+#@swag_from('docs/auth.yml')
 @token_required
 def refresh_token():
     try:
@@ -185,6 +291,7 @@ Res:
 
 '''
 @auth_bp.route('/auth/profile/<string:user_id>', methods=['GET'])
+#@swag_from('docs/auth.yml')
 def auth_user(user_id):
     try:
         conn = get_db_connection()
@@ -218,6 +325,7 @@ http://127.0.0.1:5000/auth/profile/test4
 }
 '''
 @auth_bp.route('/autu/profile/<string:user_id>', methods=['PUT'])
+#@swag_from('docs/auth.yml')
 def autu_update_user(user_id):
     print(f"Endpoint hit: /users/{user_id} with method PUT")
     print(f"Request JSON: {request.json}")
@@ -252,6 +360,7 @@ http://127.0.0.1:5000/auth/profile/change_password/test4
 '''
 # 회원 비밀 번호 변경 API(완료)
 @auth_bp.route('/auth/profile/change_password/<string:user_id>', methods=['PUT'])
+#@swag_from('docs/auth.yml')
 def change_password(user_id):
     """
     비밀번호 변경 API
@@ -290,6 +399,7 @@ def change_password(user_id):
 
 # 회원 탈퇴 API(완료)
 @auth_bp.route('/autu/profile/<string:user_id>', methods=['DELETE'])
+#@swag_from('docs/auth.yml')
 def delete_user(user_id):
     try:
         conn = get_db_connection()

@@ -1,0 +1,162 @@
+swagger: "2.0"
+info:
+  version: "1.0.0"
+  title: "Authentication APIs"
+  description: "APIs for user authentication and profile management"
+
+tags:
+  - name: "Authentication(회원가입/로그인 관련 API)"
+    description: ""
+
+paths:
+  /auth/register:
+    post:
+      tags:
+        - "Authentication(회원가입/로그인 관련 API)"
+      summary: "회원가입"
+      description: "이메일과 비밀번호를 사용하여 새로운 사용자를 등록합니다."
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              email:
+                type: "string"
+                example: "gyeongtae@example.com"
+              password:
+                type: "string"
+                example: "gyeongtae1234"
+      responses:
+        '201':
+          description: "회원가입 성공"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+          examples:
+            application/json:
+              message: "User registered successfully."
+        '400':
+          description: "잘못된 요청 (예: 이메일 중복, 잘못된 형식 등)"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+          examples:
+            application/json:
+              error: "Duplicate email."
+        '500':
+          description: "서버 오류"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+          examples:
+            application/json:
+              error: "Internal Server Error"
+
+  /auth/login:
+    post:
+      tags:
+        - "Authentication(회원가입/로그인 관련 API)"
+      summary: "로그인 API"
+      description: "사용자가 로그인합니다."
+      parameters:
+        - name: "body"
+          in: "body"
+          required: true
+          schema:
+            type: "object"
+            properties:
+              user_id:
+                type: "string"
+                example: "test4"
+              password:
+                type: "string"
+                example: "111111"
+      responses:
+        '200':
+          description: "로그인 성공"
+          schema:
+            type: "object"
+            properties:
+              message:
+                type: "string"
+          examples:
+            application/json:
+              message: "Login successful."
+        '401':
+          description: "로그인 실패"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+          examples:
+            application/json:
+              error: "Invalid credentials."
+        '500':
+          description: "서버 오류"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+          examples:
+            application/json:
+              error: "Internal Server Error"
+
+  /auth/profile/{user_id}:
+    get:
+      tags:
+        - "Authentication(회원가입/로그인 관련 API)"
+      summary: "회원 정보 조회 API"
+      description: "사용자의 정보를 조회합니다."
+      parameters:
+        - name: "user_id"
+          in: "path"
+          required: true
+          type: "string"
+          description: "조회할 사용자 ID"
+      responses:
+        '200':
+          description: "사용자 정보 조회 성공"
+          schema:
+            type: "object"
+            properties:
+              user_id:
+                type: "string"
+              email:
+                type: "string"
+              name:
+                type: "string"
+          examples:
+            application/json:
+              user_id: "12345"
+              email: "example@example.com"
+              name: "Kim Hyuna"
+        '404':
+          description: "사용자 없음"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+          examples:
+            application/json:
+              error: "User not found."
+        '500':
+          description: "서버 오류"
+          schema:
+            type: "object"
+            properties:
+              error:
+                type: "string"
+          examples:
+            application/json:
+              error: "Internal Server Error"

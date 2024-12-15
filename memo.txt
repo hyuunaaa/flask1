@@ -50,7 +50,7 @@ deactivate
 o 필요 프로그램 설치
 pip install -r requirements.txt
 없으면, 아래 명령어로 설치
-pip install flask pymysql requests beautifulsoup4 pandas schedule gunicorn mysql-connector-python bcrypt PyJWT python-dotenv
+pip install flask pymysql requests beautifulsoup4 pandas schedule gunicorn mysql-connector-python bcrypt PyJWT python-dotenv flasgger
 pip install mysql-connector-python
 
 o requirements.txt 만들기

@@ -10,8 +10,39 @@ from auth import auth_bp  # auth.py에서 Blueprint 임포트
 from bookmarks import bookmarks_bp  # bookmarks.py에서 Blueprint 임포트
 from applications import applications_bp  # applications.py에서 Blueprint 임포트
 from db import get_db_connection  # get_db_connection 임포트
+from flasgger import Swagger
 
 app = Flask(__name__)
+
+# Swagger 설정
+swagger_template = {
+    "swagger": "2.0",
+    "info": {
+        "title": "김현아의 JOB API",
+        "description": "사람인 백엔드 서버 만들기",
+        "version": "1.0.0"
+    },
+    "host": "127.0.0.1:8080",
+    "basePath": "/",
+    "schemes": ["http"]
+}
+swagger_config = {
+    "headers": [],
+    "specs": [
+        {
+            "endpoint": "apispec",
+            "route": "/apispec.json",
+            "rule_filter": lambda rule: True,
+            "model_filter": lambda tag: True,
+        }
+    ],
+    "static_url_path": "/flasgger_static",
+    "swagger_ui": True,
+    "specs_route": "/api-docs/"
+}
+
+Swagger(app, template=swagger_template, config=swagger_config)
+#swagger = Swagger(app, template_file='docs/auth.json')
 
 # 기본 루트 경로
 @app.route('/', methods=['GET'])
