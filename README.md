@@ -27,7 +27,7 @@ pip install -r requirements.txt
 
 ### MYSQL 최초 계정 등록
   * 최초 설치시에는 아무런 계정이 없으므로, root와 flask_user 계정을 생성함
-  * root는 관리용, flas_user는 앱 개발용임
+  * root는 관리용, flask_user는 앱 개발용임
 ```c
 sudo mysql
 
