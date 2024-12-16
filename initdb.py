@@ -97,6 +97,18 @@ def setup_tables():
         );
         """)
 
+        # 지원(apply_) 테이블 생성
+        cursor.execute("""
+            CREATE TABLE IF NOT EXISTS apply_ (
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                user_id VARCHAR(255) NOT NULL,
+                job_id INT NOT NULL,
+                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+                FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+                FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE
+            );
+        """)
+
         # bookmarks 테이블 생성
         cursor.execute("""
             CREATE TABLE IF NOT EXISTS bookmarks (

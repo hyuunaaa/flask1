@@ -38,6 +38,16 @@ CREATE TABLE IF NOT EXISTS saramin_jobs (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+-- 지원 모델
+CREATE TABLE IF NOT EXISTS apply_ (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    user_id VARCHAR(255) NOT NULL,
+    job_id INT NOT NULL,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (user_id) REFERENCES users(user_id) ON DELETE CASCADE,
+    FOREIGN KEY (job_id) REFERENCES saramin_jobs(id) ON DELETE CASCADE
+);
+
 -- 사용자 공고문 북마크 모델
 CREATE TABLE IF NOT EXISTS bookmarks (
     id INT AUTO_INCREMENT PRIMARY KEY,             
