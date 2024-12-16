@@ -7,6 +7,8 @@
 ```c
 # 데이터베이스 설정
 DB_HOST=localhost
+#DB_HOST=0.0.0.0
+#DB_PORT=3306
 DB_PORT=3000
 DB_USER=flask_user
 DB_PASSWORD=555555
@@ -15,7 +17,7 @@ DB_CHARSET=utf8mb4
 DB_CURSORCLASS=pymysql.cursors.DictCursor
 
 # Swagger 설정
-SWAGGER_HOST=192.168.209.132:8080
+SWAGGER_HOST=113.198.66.75:10018
 ```
 ### 파이썬 가상환경 환경 설정
  * python 가상환경 설정
