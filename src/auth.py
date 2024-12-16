@@ -161,6 +161,12 @@ def register():
             cursor.execute(sql, (data["user_id"], data["email"], hashed_password, data["name"]))
             conn.commit()
 
+
+            # 성공 로그 저장
+            log_sql = "INSERT INTO logs (user_id, log_message) VALUES (%s, %s)"
+            cursor.execute(log_sql, (data["user_id"], "회원가입 성공"))
+            conn.commit()
+
         return jsonify({"message": "회원가입 성공"}), 201
     except pymysql.MySQLError as e:
         return jsonify({"error": str(e)}), 500
@@ -240,22 +246,36 @@ def login():
               example: 데이터베이스 에러 메시지
     """    
     data = request.json
+    conn = None
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
+            # 사용자 정보 확인
             sql = "SELECT user_id, password FROM users WHERE user_id = %s"
             cursor.execute(sql, (data["user_id"],))
             user = cursor.fetchone()
 
-        if not user or not check_password(data["password"], user["password"]):
-            return jsonify({"error": "user_id 또는 비밀번호가 잘못되었습니다."}), 401
+            if not user or not check_password(data["password"], user["password"]):
+                # 실패 로그 저장
+                log_sql = "INSERT INTO logs (user_id, log_message) VALUES (%s, %s)"
+                cursor.execute(log_sql, (data["user_id"], "로그인 실패: 잘못된 사용자 ID 또는 비밀번호"))
+                conn.commit()
+                return jsonify({"error": "user_id 또는 비밀번호가 잘못되었습니다."}), 401
 
-        token = create_jwt_token(user["user_id"])
-        return jsonify({"message": "로그인 성공", "token": token}), 200
+            # 성공 시 JWT 토큰 생성
+            token = create_jwt_token(user["user_id"])
+
+            # 성공 로그 저장
+            log_sql = "INSERT INTO logs (user_id, log_message) VALUES (%s, %s)"
+            cursor.execute(log_sql, (user["user_id"], "로그인 성공"))
+            conn.commit()
+
+            return jsonify({"message": "로그인 성공", "token": token}), 200
     except pymysql.MySQLError as e:
         return jsonify({"error": str(e)}), 500
     finally:
-        conn.close()
+        if conn:
+            conn.close()
 
 
 # 토큰 갱신
@@ -481,6 +501,11 @@ def autu_update_user(user_id):
             sql = "UPDATE users SET email=%s, name=%s WHERE user_id=%s"
             cursor.execute(sql, (data.get('email'), data.get('name'), user_id))
             conn.commit()
+            # 로그 메시지 저장
+            log_sql = "INSERT INTO logs (user_id, log_message) VALUES (%s, %s)"
+            log_message = "회원 정보 수정 성공"
+            cursor.execute(log_sql, (user_id, log_message))
+            conn.commit()
         return jsonify({"message": "회원 정보 수정 성공"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -605,6 +630,12 @@ def change_password(user_id):
             cursor.execute(sql_update_password, (new_password_encoded, user_id))
             conn.commit()
 
+            # 로그 메시지 저장
+            log_sql = "INSERT INTO logs (user_id, log_message) VALUES (%s, %s)"
+            log_message = "비밀번호 변경 성공"
+            cursor.execute(log_sql, (user_id, log_message))
+            conn.commit()
+
         return jsonify({"message": "비밀번호 변경 성공"}), 200
     except Exception as e:
         return jsonify({"error": str(e)}), 500
@@ -669,6 +700,12 @@ def delete_user(user_id):
     try:
         conn = get_db_connection()
         with conn.cursor() as cursor:
+            # 로그 메시지 저장
+            log_sql = "INSERT INTO logs (user_id, log_message) VALUES (%s, %s)"
+            log_message = "회원 탈퇴 성공"
+            cursor.execute(log_sql, (user_id, log_message))
+            conn.commit()
+
             sql = "DELETE FROM users WHERE user_id=%s"
             cursor.execute(sql, (user_id,))
             conn.commit()
