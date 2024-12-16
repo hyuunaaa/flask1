@@ -2,7 +2,21 @@
 
 ## 웹서비스 설계 과제3
 
+### .env 설정
+ * 다음과 같이 시험 환경에 맞춰 DB, SWAGGER 정보를 설정
+```c
+# 데이터베이스 설정
+DB_HOST=localhost
+DB_PORT=3000
+DB_USER=flask_user
+DB_PASSWORD=555555
+DB_NAME=saramin_db
+DB_CHARSET=utf8mb4
+DB_CURSORCLASS=pymysql.cursors.DictCursor
 
+# Swagger 설정
+SWAGGER_HOST=192.168.209.132:8080
+```
 ### 파이썬 가상환경 환경 설정
  * python 가상환경 설정
 ```c
@@ -121,14 +135,7 @@ Flask App stopped.
 
 ### Swagger 문서
 
-- Swagger UI 주소: [http://113.198.66.75:17120/api-docs/](http://113.198.66.75:17120/api-docs/)
-
-#### Swagger 사용을 위한 설치 명령어
-Swagger를 사용하려면 아래 패키지를 설치해야 합니다:
-```bash
-npm install swagger-jsdoc swagger-ui-express
-
-```
+- Swagger UI 주소: [http://113.198.66.75:10018/api-docs/](http://113.198.66.75:10018/api-docs/)
 
 #### Swagger 문서 확인 방법
 1. 서버를 시작한 후 브라우저에서 아래 주소로 접속:
@@ -215,3 +222,26 @@ npm install swagger-jsdoc swagger-ui-express
 ## Review(채용 공고 리뷰 관련 API)
 - **POST** `/revew` : 리뷰 등록 API
 - **GET** `/revew/{job_id}` : 리뷰 조회 API
+
+# 기타 설정
+## mysql 외부 접속 허용 및 포트 수정
+### 1) mysqld.cnf 수정
+sudo vi /etc/mysql/mysql.conf.d/mysqld.cnf
+#port = 3306
+port = 3000
+bind-address = 0.0.0.0
+
+재시작
+sudo systemctl restart mysql
+재시작 후 안 되면 2) 적용 후 재시작
+
+### 2) mysql.cnf 수정
+sudo vi /etc/mysql/mysql.cnf 에 아래 라인 추가
+
+[mysqld]			            # 추가
+#port=3306 # or any other port	# 추가
+port=3000 # or any other port	# 추가
+bind-address=0.0.0.0		    # 추가
+
+재시작
+sudo systemctl restart mysql

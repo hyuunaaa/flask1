@@ -25,13 +25,14 @@ def setup_database():
         # MySQL 데이터베이스 연결
         conn = mysql.connector.connect(
             host=db_config["host"],
+            port=db_config["port"],  # 포트 설정 추가
             user=db_config["user"],
             password=db_config["password"]
         )
         cursor = conn.cursor()
 
         # 데이터베이스 삭제
-        #cursor.execute("DROP DATABASE IF EXISTS saramin_db;")
+        cursor.execute("DROP DATABASE IF EXISTS saramin_db;")
         # 데이터베이스가 없을 경우에만 생성
         cursor.execute("CREATE DATABASE IF NOT EXISTS saramin_db CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci;")
 
@@ -59,6 +60,7 @@ def setup_tables():
         # MySQL 데이터베이스 연결
         conn = mysql.connector.connect(
             host=db_config["host"],
+            port=db_config["port"],  # 포트 설정 추가
             user=db_config["user"],
             password=db_config["password"],
             database=db_config["database"]

@@ -19,6 +19,7 @@ logging.basicConfig(
 # MySQL 데이터베이스 설정 (환경변수에서 로드)
 db_config = {
     "host": os.getenv("DB_HOST"),
+    "port": int(os.getenv("DB_PORT")),  # 포트를 정수로 변환
     "user": os.getenv("DB_USER"),
     "password": os.getenv("DB_PASSWORD"),
     "database": os.getenv("DB_NAME"),
@@ -45,6 +46,7 @@ def parse_deadline(raw_deadline):
 
 # saramin_python2.csv 데이터를 데이터베이스에 추가
 def add_csv_to_database(csv_file_path):
+    connection = None  # 초기화
     try:
         connection = pymysql.connect(**db_config)
         with connection.cursor() as cursor:
@@ -93,7 +95,7 @@ def add_csv_to_database(csv_file_path):
     except Exception as e:
         logging.error(f"일반 에러 발생: {e}")
     finally:
-        if connection:
+        if connection:  # connection 변수가 None이 아닌 경우에만 닫음
             connection.close()
 
 if __name__ == "__main__":
