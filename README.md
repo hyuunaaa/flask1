@@ -1,4 +1,4 @@
-# Crawler
+# Crawler 
 
 ## 웹서비스 설계 과제3
 
@@ -102,21 +102,6 @@ python crawl_saramin.py
 2024-12-15 13:50:56,307 [INFO] 100개의 데이터를 saramin_python.csv 파일에 저장했습니다.
 2024-12-15 13:50:56,308 [INFO] 크롤링 완료. 다음 크롤링은 24시간 후.
 ```
- * 필요시 .env 수정
-```c
-# 데이터베이스 설정
-DB_HOST=localhost
-DB_USER=flask_user
-DB_PASSWORD=555555
-DB_NAME=saramin_db
-DB_CHARSET=utf8mb4
-DB_CURSORCLASS=pymysql.cursors.DictCursor
-
-# Swagger 설정
-SWAGGER_HOST=127.0.0.1:8080
-#SWAGGER_HOST=113.198.66.75:10018
-
-``` 
  * **flask app 백그라운드 실행**
 ```c
 chmod +x app_start.sh
@@ -136,7 +121,7 @@ Flask App stopped.
 
 ### Swagger 문서
 
-- Swagger UI 주소: [http://113.198.66.75:10018/api-docs/](http://113.198.66.75:10018/api-docs/)
+- Swagger UI 주소: [http://113.198.66.75:17120/api-docs/](http://113.198.66.75:17120/api-docs/)
 
 #### Swagger 사용을 위한 설치 명령어
 Swagger를 사용하려면 아래 패키지를 설치해야 합니다:
@@ -177,9 +162,8 @@ npm install swagger-jsdoc swagger-ui-express
 ├── 📄 crawler.log          # 로그 파일
 ├── 🐍 crawl_saramin.py     # 사람인 크롤러 스크립트
 ├── 🟨 requirements.txt     # 파이썬 의존성 모듈 목록 파일
-├── 🟨 saramin_python.csv   # 크롤러가 생성한 사람인 DB(csv) 파일
+├── 🟨 saramin_python.csv   # 크롤러가 생성한 사람인 DB
 ├── 🟨 initdb.py            # MYSQL 사용자, 북마크, 채용 공고 등 모델 8개 초기화/생성 스크립트
-├── 🟨 crawled-data.sql     # DB 초기화 생성 스크립트 파일
 ├── 🟨 csv2db.py            # 로컬 .csv -> MYSQL DB(saramin_db) 저장 스크립트
 ├── 🟨 app_start.sh         # flask 애플리케이션 백그라운드 실행 스크립트
 ├── 🟨 app_stop.sh          # flask 애플리케이션 종료 스크립트
@@ -195,7 +179,7 @@ npm install swagger-jsdoc swagger-ui-express
 - **DELETE** `​/applications/cancel` : 지원 취소
 - **GET** `/applications/list/{user_id}` : 지원 목록 조회
 ---
-## Authentication(회원가입/로그인 관련 API)
+## Authentication(회원가입/로그인 관련 API)  
 - **POST** `​/auth/login` : 로그인
 - **PUT** `/auth/profile/change_password/{user_id}` : 비밀번호 변경
 - **GET** `/auth/profile/{user_id}` : 회원 정보 조회
@@ -207,8 +191,27 @@ npm install swagger-jsdoc swagger-ui-express
 - **GET** `​/board` : 게시글 조회
 - **POST** `/board` : 게시글 등록
 - **DELETE** `/board/{id}` : 게시글 삭제
---- 
+---
 ## Bookmarks(북마크 관련 API)
 - **POST** `/bookmarks` : 관심 등록
 - **GET** `/bookmarks/{user_id}` : 관심 채용 공고 조회
 ---
+## Job Posting(채용공고 관련 API)
+- **GET** `/jobs` : 채용 공고 목록 조회 API
+- **POST** `/jobs` : 채용 공고 등록 API
+- **DELETE** `/jobs/{job_id}` : 채용 공고 삭제 API
+- **GET** `/jobs/{job_id}` : 채용 공고 상세 조회 API
+- **PUT** `/jobs/{job_id}` : 채용 공고 수정 API
+---
+## User Opinion(사용자 의견 관련 API)
+- **POST** `/opinon` : 사용자 의견 등록 API
+- **DELETE** `/opinon/{id}` : 사용자 의견 삭제 API
+- **GET** `/opinon/{job_id}` : 사용자 의견 조회 API
+---
+## RESUME(이력서 관련 API)
+- **POST** `/resume` : 이력서 등록 API
+- **GET** `/resume/{user_id}` : 이력서 조회 API
+---
+## Review(채용 공고 리뷰 관련 API)
+- **POST** `/revew` : 리뷰 등록 API
+- **GET** `/revew/{job_id}` : 리뷰 조회 API
